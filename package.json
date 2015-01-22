@@ -1,0 +1,35 @@
+{
+  "name": "f1",
+  "version": "1.0.0",
+  "description": "A stateful ui library",
+  "main": "index.js",
+  "license": "MIT",
+  "author": {
+    "name": "Mikko Haapoja",
+    "email": "me@mikkoh.com",
+    "url": "https://github.com/mikkoh"
+  },
+  "dependencies": {
+    "interpolation-builder": "^2.1.0",
+    "kimi": "^2.0.0",
+    "lodash": "^2.4.1",
+    "tween-function": "^1.0.0"
+  },
+  "devDependencies": {
+    "tape": "^3.4.0"
+  },
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": [
+    "state,stateful,ui,ease,tween"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mikkoh/f1.git"
+  },
+  "homepage": "https://github.com/mikkoh/f1",
+  "bugs": {
+    "url": "https://github.com/mikkoh/f1/issues"
+  }
+}
