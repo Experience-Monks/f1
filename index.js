@@ -5,26 +5,28 @@ var kimi = require( 'kimi' ),
 var parseStates = require( './lib/states/parseStates' ),
     parseTransitions = require( './lib/transitions/parseTransitions' );
 
-module.exports = ui;
+module.exports = f1;
 
-function ui() {
+function f1( settings ) {
 
-  if( !( this instanceof ui ) ) {
+  if( !( this instanceof f1 ) ) {
 
-    return new ui();
+    return new f1( settings );
   }
+
+  settings = settings || {};
 
   this.defStates = null;
   this.defTransitions = null;
 
   this.driver = kimi( {
 
-    onState: onState.bind( this ),
-    onUpdate: onUpdate.bind( this )
+    onState: settings.onState,
+    onUpdate: settings.onUpdate
   });
 }
 
-ui.prototype = {
+f1.prototype = {
 
   states: function( states ) {
 
@@ -51,13 +53,3 @@ ui.prototype = {
     this.driver.go( state );
   }
 };
-
-function onState( state, value ) {
-
-  console.log( '---->', state, value );
-}
-
-function onUpdate( value, time ) {
-
-  console.log( value, time );
-}

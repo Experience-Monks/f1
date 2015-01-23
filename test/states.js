@@ -1,29 +1,29 @@
 module.exports = {
   pre: {
     bg: {
-      x: 10,
-      y: -100
+      alpha: 0,
+      position: [ 0, -100 ]
     }
   },
 
   idle: {
     bg: {
-      x: 10,
-      y: 10
+      alpha: 1,
+      position: [ 0, 0 ]
     }
   },
 
   rollOver: {
     bg: {
-      x: 20,
-      y: 20
+      alpha: 1,
+      position: [ 10, 0 ]
     }
   },
 
   post: {
     bg: {
-      x: 10,
-      y: 100
+      alpha: 0,
+      position: [ 0, 100 ]
     }
   }
 };

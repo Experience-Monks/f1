@@ -1,6 +1,17 @@
 var ui = require( './..' );
 
-var btn = ui();
+var btn = ui( {
+
+  onState: function( state, value ) {
+
+    console.log( 'state:', state, value );
+  },
+
+  onUpdate: function( value, time ) {
+
+    console.log( 'update: ', value, time );
+  }
+});
 
 btn.states( require( './states' ) );
 
