@@ -2,7 +2,7 @@ var kimi = require( 'kimi' ),
     f1Parser = require( 'f1-parser' ),
     getTween = require( 'tween-function' ),
     _ = require( 'lodash' ),
-    noop = require( 'noop' );
+    noop = require( 'no-op' );
 
 var parseStates = require( './lib/states/parseStates' ),
     parseTransitions = require( './lib/transitions/parseTransitions' );
@@ -15,6 +15,8 @@ function f1( settings ) {
 
     return new f1( settings );
   }
+
+  settings = settings || {};
 
   this.onState = settings.onState || noop;
   this.onUpdate = settings.onUpdate || noop;

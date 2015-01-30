@@ -14,7 +14,7 @@
     "interpolation-builder": "^2.1.0",
     "kimi": "^3.0.2",
     "lodash": "^2.4.1",
-    "noop": "^0.2.2",
+    "no-op": "^1.0.3",
     "tween-function": "^1.0.0"
   },
   "devDependencies": {
