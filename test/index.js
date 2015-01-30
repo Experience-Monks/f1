@@ -1,21 +1,31 @@
 var ui = require( './..' );
 
+var btnEL = {};
+
 var btn = ui( {
 
-  onState: function( state, value ) {
+  onState: function( value, state ) {
 
-    console.log( 'state:', state, value );
+    console.log( 'onState --> ', state, value );
   },
 
-  onUpdate: function( value, time ) {
+  onUpdate: function( value, state, time ) {
 
-    console.log( 'update: ', value, time );
+    console.log( 'btnEL:', btnEL );
   }
 });
 
-btn.states( require( './states' ) );
+btn.toAnimate( btnEL );
 
-btn.transitions( 
+btn
+.teach( function( item, data ) {
+
+  item.x = data.bg.position[ 0 ];
+  item.y = data.bg.position[ 1 ];
+  item.alpha = data.bg.alpha;
+})
+.states( require( './states' ) )
+.transitions( 
 
   'pre', 'idle', { duration: 1 },
 
@@ -31,11 +41,9 @@ btn.transitions(
   },
 
   'idle', 'post'
-);
-
-btn.init( 'pre' );
-
-btn.go( 'rollOver' );
+)
+.init( 'pre' )
+.go( 'rollOver' );
 
 
 

@@ -10,9 +10,11 @@
     "url": "https://github.com/mikkoh"
   },
   "dependencies": {
+    "f1-parser": "^1.0.0",
     "interpolation-builder": "^2.1.0",
     "kimi": "^3.0.2",
     "lodash": "^2.4.1",
+    "noop": "^0.2.2",
     "tween-function": "^1.0.0"
   },
   "devDependencies": {
