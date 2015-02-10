@@ -46,8 +46,6 @@ f1.prototype = {
 
     this.animatables = parseAnimatables( animatables );
 
-    console.log( 'animatables', this.animatables );
-
     return this;
   },
 
