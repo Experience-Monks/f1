@@ -5,7 +5,8 @@ var kimi = require( 'kimi' ),
     noop = require( 'no-op' );
 
 var parseStates = require( './lib/states/parseStates' ),
-    parseTransitions = require( './lib/transitions/parseTransitions' );
+    parseTransitions = require( './lib/transitions/parseTransitions' ),
+    parseAnimatables = require( './lib/animatables/parseAnimatables' );
 
 module.exports = f1;
 
@@ -21,28 +22,31 @@ function f1( settings ) {
   this.onState = settings.onState || noop;
   this.onUpdate = settings.onUpdate || noop;
 
-  this.animatable = settings.toAnimate || null;
+  this.data = null; // current animation data
+  this.animatables = this.toAnimate( settings.toAnimate ) || null;
   this.defStates = settings.states || null;
   this.defTransitions = settings.transitions || null;
   this.parser = null;
 
-  if( settings.parsers ) {
+  if( settings.teach ) {
 
-    this.teach( settings.parsers );
+    this.teach( settings.teach );
   }
 
   this.driver = kimi( {
 
-    onState: onState.bind( this ),
-    onUpdate: onUpdate.bind( this )
+    onState: _onState.bind( this ),
+    onUpdate: _onUpdate.bind( this )
   });
 }
 
 f1.prototype = {
 
-  toAnimate: function( animatable ) {
+  toAnimate: function( animatables ) {
 
-    this.animatable = animatable;
+    this.animatables = parseAnimatables( animatables );
+
+    console.log( 'animatables', this.animatables );
 
     return this;
   },
@@ -98,29 +102,59 @@ f1.prototype = {
     this.driver.go( state );
 
     return this;
+  },
+
+  apply: function( animatablePath, animatable ) {
+
+    var data = this.data,
+        animationData;
+
+    if( this.parser ) {
+
+      if( typeof animatablePath == 'string' ) {
+
+        animatablePath = animatablePath.split( '.' );
+      }
+
+      animationData = data[ animatablePath[ 0 ] ];
+
+      for( var i = 1, len = animatablePath.length; i < len; i++ ) {
+
+        animationData = animationData[ animatablePath[ i ] ];
+      }
+
+      this.parser.parse( animatable, animationData );
+    }
   }
 };
 
-function onUpdate( data, state, time ) {
+function _onUpdate( data, state, time ) {
 
-  if( this.parser && this.animatable ) {
+  var animatablePath, animatable;
 
-    if( Array.isArray( this.animatable ) ) {
+  this.data = data;
+  this.state = state;
+  this.time = time;
 
-      this.animatable.forEach( function( item ) {
+  if( this.animatables ) {
 
-        this.parser.parse( item, data );
-      });
-    } else {
+    for( var i = 0, len = this.animatables.length; i < len; i += 2 ) {
 
-      this.parser.parse( this.animatable, data );
+      animatablePath = this.animatables[ i ];
+      animatable = this.animatables[ i + 1 ];
+
+      this.apply( animatablePath, animatable );
     }
   }
 
   this.onUpdate( data, state, time );
 }
 
-function onState( data, state ) {
+function _onState( data, state ) {
+
+  this.data = data;
+  this.state = state;
+  this.time = 0;
 
   this.onState( data, state );
 }

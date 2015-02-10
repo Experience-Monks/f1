@@ -15,14 +15,12 @@ var btn = ui( {
   }
 });
 
-btn.toAnimate( btnEL );
-
 btn
 .teach( function( item, data ) {
 
-  item.x = data.bg.position[ 0 ];
-  item.y = data.bg.position[ 1 ];
-  item.alpha = data.bg.alpha;
+  item.x = data.position[ 0 ];
+  item.y = data.position[ 1 ];
+  item.alpha = data.alpha;
 })
 .states( require( './states' ) )
 .transitions( 
@@ -42,6 +40,10 @@ btn
 
   'idle', 'post'
 )
+.toAnimate( {
+
+  bg: btnEL
+})
 .init( 'pre' )
 .go( 'rollOver' );
 
