@@ -15,7 +15,7 @@
     "kimi": "^4.0.0",
     "lodash": "^2.4.1",
     "no-op": "^1.0.3",
-    "tween-function": "^1.0.0"
+    "tween-function": "^2.0.0"
   },
   "devDependencies": {
     "tape": "^3.4.0"
