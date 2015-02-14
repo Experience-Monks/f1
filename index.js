@@ -102,12 +102,20 @@ f1.prototype = {
     return this;
   },
 
-  apply: function( animatablePath, animatable ) {
+  apply: function( animatablePath, animatable, parseFunctions ) {
 
     var data = this.data,
+        parser = this.parser,
         animationData;
 
-    if( this.parser ) {
+    // if parse functions were passed in then create a new parser
+    if( parseFunctions ) {
+
+      parser = new f1Parser( parseFunctions );
+    }
+
+    // if we have a parser then apply the parsers (parsers set css etc)
+    if( parser ) {
 
       if( typeof animatablePath == 'string' ) {
 
@@ -121,7 +129,7 @@ f1.prototype = {
         animationData = animationData[ animatablePath[ i ] ];
       }
 
-      this.parser.parse( animatable, animationData );
+      parser.parse( animatable, animationData );
     }
   }
 };
