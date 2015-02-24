@@ -6,12 +6,12 @@ var btn = ui( {
 
   onState: function( value, state ) {
 
-    console.log( 'onState --> ', state, value );
+    console.log( 'onState --> ', state, JSON.stringify( value ) );
   },
 
   onUpdate: function( value, state, time ) {
 
-    console.log( 'btnEL:', btnEL );
+    console.log( 'onUpdate --> ', state, JSON.stringify( value ) );
   }
 });
 
