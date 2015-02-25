@@ -28,9 +28,12 @@ btn
   'pre', 'idle', { duration: 1 },
 
   'idle', 'rollOver', {
-    bg: { 
-      x: { duration: 0.5, delay: 0 },
-      y: { duration: 0.5, delay: 0.1 }
+    bg: {
+
+      position: function( time, start, end ) {
+
+        return [ 333, 333 ];
+      }
     }
   },
 
