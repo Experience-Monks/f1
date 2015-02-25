@@ -1,11 +1,14 @@
 module.exports = {
-  pre: {
-    bg: {
-      alpha: 0,
-      position: [ 0, -100 ],
-      text: 'pre',
-      someBoolean: false
-    }
+  pre: function( stateName ) {
+    
+    return {
+      bg: {
+        alpha: 0,
+        position: [ 0, -100 ],
+        text: 'pre',
+        someBoolean: false
+      }
+    };
   },
 
   idle: {
