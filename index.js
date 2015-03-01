@@ -87,10 +87,19 @@ f1.prototype = {
 
     var driver = this.driver;
 
-    parseStates( driver, this.defStates );
-    parseTransitions( driver, this.defStates, this.defTransitions );
+    if( !this.defStates ) {
 
-    driver.init( initState );
+      throw new Error( 'You must define states before attempting to call init' );
+    } else if( !this.defTransitions ) {
+
+      throw new Error( 'You must define transitions before attempting to call init' );
+    } else {
+
+      parseStates( driver, this.defStates );
+      parseTransitions( driver, this.defStates, this.defTransitions );
+
+      driver.init( initState );
+    }
 
     return this;
   },
@@ -100,6 +109,11 @@ f1.prototype = {
     this.driver.go( state );
 
     return this;
+  },
+
+  update: function() {
+
+    _onUpdate.call( this, this.data, this.state, this.time );
   },
 
   apply: function( animatablePath, animatable, parseFunctions ) {
@@ -138,22 +152,25 @@ function _onUpdate( data, state, time ) {
 
   var animatablePath, animatable;
 
-  this.data = data;
-  this.state = state;
-  this.time = time;
+  if( data !== undefined && state !== undefined && time !== undefined ) {
 
-  if( this.animatables ) {
+    this.data = data;
+    this.state = state;
+    this.time = time;
 
-    for( var i = 0, len = this.animatables.length; i < len; i += 2 ) {
+    if( this.animatables ) {
 
-      animatablePath = this.animatables[ i ];
-      animatable = this.animatables[ i + 1 ];
+      for( var i = 0, len = this.animatables.length; i < len; i += 2 ) {
 
-      this.apply( animatablePath, animatable );
+        animatablePath = this.animatables[ i ];
+        animatable = this.animatables[ i + 1 ];
+
+        this.apply( animatablePath, animatable );
+      }
     }
-  }
 
-  this.onUpdate( data, state, time );
+    this.onUpdate( data, state, time );
+  }
 }
 
 function _onState( data, state ) {

@@ -24,7 +24,7 @@ ui
 // will be used when defining states
 .toAnimate( {
 
-  item: bg
+  item: find( '#bg' )
 })
 // this will tell f1 what item should look like in each state
 .states( {
@@ -88,6 +88,59 @@ el.addEventListener( 'mouseleave', function() {
   ui.go( 'idle' );
 });
 ```
+
+## API 
+
+### Constructor
+```javascript
+ui = f1( [ settigns ] );
+```
+or 
+```javascript
+ui = new f1( [ settings ] );
+```
+
+To construct an `f1` instance you can pass in an optional settings object. The following are properties you can pass in settings:
+```javascript
+{
+  onState: listenerState, // this callback will be called whenever f1 reaches a state
+  onUpdate: listenerUpdater, // this callback will be called whenever f1 is updating
+  
+  // this is an object which contains all elements/items that you will be animating
+  toAnimate: { 
+    bg: bgElement 
+  }, 
+
+  // all states for the ui
+  // states are the top level object and anything after that are the properties 
+  // for that state
+  states: { 
+    out: {
+
+      bg: { alpha: 0 } 
+    },
+
+    idle: {
+
+      bg: { alpha: 1 }
+    }
+  },
+
+  // an array which defines the transitions for the ui
+  transitions: [
+    'out', 'idle', // this ui can go from out to idle
+    'idle', 'out' // and idle to out
+  ],
+
+  // an array of functions which will be able to take values
+  // from a state define in states and apply it to the 
+  // items defined in toAnimate
+  teach: [ applyAlpha ]
+}
+```
+
+
+
 
 ## License
 
