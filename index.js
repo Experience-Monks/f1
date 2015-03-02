@@ -10,6 +10,59 @@ var parseStates = require( './lib/states/parseStates' ),
 
 module.exports = f1;
 
+/**
+ * To construct a new `f1` instance you can do it in two ways.
+ * 
+ * ```javascript
+ * ui = f1( [ settigns ] );
+ * ```
+ * or 
+ * ```javascript
+ * ui = new f1( [ settings ] );
+ * ```
+ * 
+ * To construct an `f1` instance you can pass in an optional settings object. The following are properties you can pass in settings:
+ * ```javascript
+ * {
+ *   onState: listenerState, // this callback will be called whenever f1 reaches a state
+ *   onUpdate: listenerUpdater, // this callback will be called whenever f1 is updating
+ *   
+ *   // this is an object which contains all elements/items that you will be animating
+ *   toAnimate: { 
+ *     bg: bgElement 
+ *   }, 
+ * 
+ *   // all states for the ui
+ *   // states are the top level object and anything after that are the properties 
+ *   // for that state
+ *   states: { 
+ *     out: {
+ * 
+ *       bg: { alpha: 0 } 
+ *     },
+ * 
+ *     idle: {
+ * 
+ *       bg: { alpha: 1 }
+ *     }
+ *   },
+ * 
+ *   // an array which defines the transitions for the ui
+ *   transitions: [
+ *     'out', 'idle', // this ui can go from out to idle
+ *     'idle', 'out' // and idle to out
+ *   ],
+ * 
+ *   // an array of functions which will be able to take values
+ *   // from a state define in states and apply it to the 
+ *   // items defined in toAnimate
+ *   teach: [ applyAlpha ]
+ * }
+ * ```
+ * 
+ * @param  {Object} [settings] An optional settings Object described above
+ * @chainable
+ */
 function f1( settings ) {
 
   if( !( this instanceof f1 ) ) {
@@ -42,13 +95,114 @@ function f1( settings ) {
 
 f1.prototype = {
 
-  toAnimate: function( animatables ) {
+  /**
+   * define which items are going to be animated. Pass in an object
+   * which will look something like this:
+   * ```javascript
+   * var ui = require( 'f1' )();
+   *
+   * ui.toAnimate( {
+   *
+   *  itemToAnimate1: find( '#itemToAnimate1' ),
+   *  itemToAnimate2: find( '#itemToAnimate2' )
+   * });
+   * ```
+   * The `Object` being passed in should have variable names which will
+   * associate to data which will be defined when setting up states in the
+   * `f1.states` method. The value which you pass these can be anything.
+   *
+   * In this case `itemToAnimate1` and `itemToAnimate2` will be a HTML Elements.
+   * 
+   * @param  {Object} targets An Object which will define which items will be animated
+   * @chainable
+   */
+  toAnimate: function( targets ) {
 
-    this.animatables = parseAnimatables( animatables );
+    this.animatables = parseAnimatables( targets );
 
     return this;
   },
 
+  /**
+   * defines the states which this `f1` instance will use.
+   *
+   * States are defined as objects. It could look something like this:
+   * ```javascript
+   * var ui = require( 'f1' )();
+   * 
+   * ui.states( {
+   *
+   *  out: {
+   *    itemToAnimate1: {
+   *      variableToAnimate: 0
+   *    },
+   *
+   *    itemToAnimate2: {
+   *      variableToAnimate: 0
+   *    }
+   *  },
+   *
+   *  idle: {
+   *    itemToAnimate1: {
+   *      variableToAnimate: 1
+   *    },
+   *
+   *    itemToAnimate2: {
+   *      variableToAnimate: 2
+   *    }
+   *  }
+   * });
+   * ```
+   * Above two states would be created: `out` and `idle`. Both would animate two
+   * objects: `itemToAnimate1` and `itemToAnimate2`. And in both of those objects
+   * the property `variableToAnimate` is defined. So if we were to transition from
+   * `out` to `idle` in `itemToAnimate1` `variableToAnimate` would transition from
+   * 0 to 1 and in `itemToAnimate2` from 0 to 2.
+   *
+   * States can also be defined by passing in objects for instance the above could
+   * be changed to look like this:
+   * ```javascript
+   * var ui = require( 'f1' )();
+   * 
+   * ui.states( {
+   *
+   *  out: function( stateName ) {
+   *
+   *    console.log( stateName ); // "out"
+   * 
+   *    return {
+   *      itemToAnimate1: {
+   *        variableToAnimate: 0
+   *      },
+   *  
+   *      itemToAnimate2: {
+   *        variableToAnimate: 0
+   *      }
+   *    };
+   *  },
+   *
+   *  idle: function( stateName ) {
+   *
+   *    console.log( stateName ); // "idle"
+   * 
+   *    return {
+   *      itemToAnimate1: {
+   *        variableToAnimate: 1
+   *      },
+   *  
+   *      itemToAnimate2: {
+   *        variableToAnimate: 2
+   *      }
+   *    };
+   *  }
+   * });
+   * ```
+   * The above can be handy when there are many items which states must be defined for
+   * instance a menu with many buttons.
+   * 
+   * @param  {Object} states defines all of the states for an `f1` instance
+   * @chainable
+   */
   states: function( states ) {
 
     this.defStates = states;
@@ -56,6 +210,92 @@ f1.prototype = {
     return this;
   },
 
+  /**
+   * defines how this `f1` instance can move between states. 
+   *
+   * For instance if we had two states out and idle you could define your transitions
+   * like this:
+   *
+   * ```javascript
+   * var ui = require( 'f1' )();
+   * 
+   * ui.transitions( [
+   *   'out', 'idle', // defines that you can go from the out state to the idle state
+   *   'idle', 'out' // defines that you can go from the idle state to the out state
+   * ]);
+   * ```
+   *
+   * Note that transitions are not bi-directional.
+   *
+   * If you simply just defined state names a default animation would be applied between
+   * states. This default transition will have a duration of 0.5 seconds and use no ease.
+   *
+   * If you want to modify the animation duration and ease you can define your transitions
+   * like this:
+   *
+   * ```javascript
+   * var eases = require( 'eases' );
+   * var ui = require( 'f1' )();
+   * 
+   * ui.transitions( [
+   *   'out', 'idle', { duration: 1, ease: eases.expoOut }, 
+   *   'idle', 'out', { duration: 0.5, ease: eases.expoIn }
+   * ]);
+   * ```
+   *
+   * Defining your transitions using the above syntax will cause all properties to animate
+   * using the duration and ease defined. 
+   *
+   * Ease functions should take a time property between 0-1 and return a modified value between
+   * 0-1.
+   * 
+   * You can also animate properties individually. Here passing a delay maybe sometimes 
+   * userful:
+   * 
+   * ```javascript
+   * var eases = require( 'eases' );
+   * var ui = require( 'f1' )();
+   * 
+   * ui.transitions( [
+   *   'out', 'idle', { 
+   *     duration: 1, ease: eases.expoOut,
+   *
+   *     position: { duration: 0.5, delay: 0.5, ease: eases.quadOut },
+   *     alpha: { duration: 0.5 }
+   *    }, 
+   *   'idle', 'out', { duration: 0.5, ease: eases.expoIn }
+   * ]);
+   * ```
+   *
+   * In that example every property besides `position` and `alpha` will have a duration of one second
+   * using the `eases.quadOut` ease equation. `position` will have a duration of 0.5 seconds and will
+   * be delayed 0.5 seconds and will use the `eases.quadOut` easing function. `alpha` will simply have
+   * a duration of 0.5 seconds.
+   *
+   * For advanced transitions you can pass in a function instead like so:
+   * ```javascript
+   * 
+   * ui.transitions( [
+   *   'out', 'idle', { 
+   *     duration: 1, ease: eases.expoOut,
+   *
+   *     position: { duration: 0.5, delay: 0.5, ease: eases.quadOut },
+   *     
+   *     alpha: function( time, start, end ) {
+   *
+   *        return ( end - start ) * time + start;
+   *     }
+   *    }, 
+   *   'idle', 'out', { duration: 0.5, ease: eases.expoIn }
+   * ]);
+   * ```
+   * 
+   * There the animation is the same as in the previous example however `alpha` will be calculated using
+   * a custom transition function.
+   * 
+   * @param  {Array} transitions An array which descriptes transitions
+   * @chainable
+   */
   transitions: function( transitions ) {
 
     this.defTransitions = _.isArray( transitions ) ? transitions : arguments;
@@ -63,6 +303,27 @@ f1.prototype = {
     return this;
   },
 
+  /**
+   * `f1` can target many different platforms. How it does this is by learning
+   * how to parse defined states properties and applying it items you'd like
+   * to animate.
+   *
+   * An Array of functions or multiple functions can be passes to `f1` each function
+   * will read data from the state and apply it to the object being animated.
+   *
+   * An example function that sets the left position of a dom element might look like
+   * this:
+   * ```javascript
+   * function setLeft( item, data ) {
+   * 
+   *  item.style.left = data.left + 'px';
+   * }
+   * ```
+   * 
+   * @param  {Array} an array of functions which will parse states and apply them to
+   *                 objects which are being animated.
+   * @chainable
+   */
   teach: function() {
 
     var parseMethods = Array.prototype.slice.call( arguments );
@@ -83,6 +344,14 @@ f1.prototype = {
     return this;
   },
 
+  /**
+   * Initializes `f1`. `init` will throw errors if required parameters such as
+   * states and transitions are missing. The initial state for the `f1` instance
+   * should be passed in.
+   * 
+   * @param  {String} Initial state for the `f1` instance
+   * @chainable
+   */
   init: function( initState ) {
 
     var driver = this.driver;
@@ -104,6 +373,13 @@ f1.prototype = {
     return this;
   },
 
+  /**
+   * Will tell `f1` to go to another state. Calling `go` will cause `f1` to calculate a path defined
+   * through transitions to the state which was passed to it.
+   * 
+   * @param  {String} state The new state you'd like to go to
+   * @chainable
+   */
   go: function( state ) {
 
     this.driver.go( state );
@@ -111,11 +387,35 @@ f1.prototype = {
     return this;
   },
 
+  /**
+   * Will force `f1` to update. This is useful if you're updating a states values lets say by mouse movement.
+   * You'd call `f1.update` to ensure the state gets applied.
+   *
+   * @chainable
+   */
   update: function() {
 
     _onUpdate.call( this, this.data, this.state, this.time );
+
+    return this;
   },
 
+  /**
+   * An advanced method where you can apply the current state f1
+   * has calculated to any object.
+   *
+   * Basically allows you to have one f1 object control multiple objects
+   * or manually apply animations to objects.
+   * 
+   * @param  {String} animatablePath A path in the current state to the object you'd like to apply. The path should
+   *                                 be defined using dot notation. So if your state had an object named `thing` and it
+   *                                 contained another object you'd like to apply called `data`. Your `animatablePath`
+   *                                 would be `'thing.data'`
+   * @param  {Object} animatable The object you'd like to apply the currently calculated state to. For instance animatable
+   *                             could be an html element.
+   * @param  {Array} [parseFunctions] An optional array of functions which will pull data from the current state and apply
+   *                                  it to the `animatable` object.
+   */
   apply: function( animatablePath, animatable, parseFunctions ) {
 
     var data = this.data,
