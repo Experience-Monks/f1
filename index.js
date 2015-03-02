@@ -1,7 +1,6 @@
 var kimi = require( 'kimi' ),
     f1Parser = require( 'f1-parser' ),
     getTween = require( 'tween-function' ),
-    _ = require( 'lodash' ),
     noop = require( 'no-op' );
 
 var parseStates = require( './lib/states/parseStates' ),
@@ -298,7 +297,7 @@ f1.prototype = {
    */
   transitions: function( transitions ) {
 
-    this.defTransitions = _.isArray( transitions ) ? transitions : arguments;
+    this.defTransitions = Array.isArray( transitions ) ? transitions : arguments;
 
     return this;
   },
