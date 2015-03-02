@@ -7,7 +7,7 @@
   "author": {
     "name": "Mikko Haapoja",
     "email": "me@mikkoh.com",
-    "url": "https://github.com/mikkoh"
+    "url": "https://github.com/jam3"
   },
   "dependencies": {
     "f1-parser": "^1.0.0",
@@ -28,10 +28,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/mikkoh/f1.git"
+    "url": "git://github.com/jam3/f1.git"
   },
-  "homepage": "https://github.com/mikkoh/f1",
+  "homepage": "https://github.com/jam3/f1",
   "bugs": {
-    "url": "https://github.com/mikkoh/f1/issues"
+    "url": "https://github.com/jam3/f1/issues"
   }
 }
