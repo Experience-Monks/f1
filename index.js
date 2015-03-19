@@ -27,7 +27,7 @@ module.exports = f1;
  *   onUpdate: listenerUpdater, // this callback will be called whenever f1 is updating
  *   
  *   // this is an object which contains all elements/items that you will be animating
- *   toAnimate: { 
+ *   targets: { 
  *     bg: bgElement 
  *   }, 
  * 
@@ -54,8 +54,8 @@ module.exports = f1;
  * 
  *   // an array of functions which will be able to take values
  *   // from a state define in states and apply it to the 
- *   // items defined in toAnimate
- *   teach: [ applyAlpha ]
+ *   // items defined in targets
+ *   parsers: [ applyAlpha ]
  * }
  * ```
  * 
@@ -75,14 +75,14 @@ function f1( settings ) {
   this.onUpdate = settings.onUpdate || noop;
 
   this.data = null; // current animation data
-  this.animatables = this.toAnimate( settings.toAnimate ) || null;
+  this.animatables = this.targets( settings.targets ) || null;
   this.defStates = settings.states || null;
   this.defTransitions = settings.transitions || null;
   this.parser = null;
 
-  if( settings.teach ) {
+  if( settings.parsers ) {
 
-    this.teach( settings.teach );
+    this.parsers( settings.parsers );
   }
 
   this.driver = kimi( {
@@ -100,7 +100,7 @@ f1.prototype = {
    * ```javascript
    * var ui = require( 'f1' )();
    *
-   * ui.toAnimate( {
+   * ui.targets( {
    *
    *  itemToAnimate1: find( '#itemToAnimate1' ),
    *  itemToAnimate2: find( '#itemToAnimate2' )
@@ -115,7 +115,7 @@ f1.prototype = {
    * @param  {Object} targets An Object which will define which items will be animated
    * @chainable
    */
-  toAnimate: function( targets ) {
+  targets: function( targets ) {
 
     this.animatables = parseAnimatables( targets );
 
@@ -323,7 +323,7 @@ f1.prototype = {
    *                 objects which are being animated.
    * @chainable
    */
-  teach: function() {
+  parsers: function() {
 
     var parseMethods = Array.prototype.slice.call( arguments );
 
@@ -337,7 +337,7 @@ f1.prototype = {
 
     parseMethods.forEach( function( parser ) {
 
-      this.parser.teach( parser );
+      this.parser.parsers( parser );
     }.bind( this ));
 
     return this;

@@ -10,7 +10,7 @@
     "url": "https://github.com/jam3"
   },
   "dependencies": {
-    "f1-parser": "^1.0.0",
+    "f1-parser": "^2.0.0",
     "interpolation-builder": "^2.1.0",
     "kimi": "^4.0.1",
     "lodash": "^3.3.1",

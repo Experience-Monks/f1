@@ -22,7 +22,7 @@ var container;
 ui
 // this will tell f1 what it should be animating. `item`
 // will be used when defining states
-.toAnimate( {
+.targets( {
 
   item: find( '#bg' )
 })
@@ -64,7 +64,7 @@ ui
 ])
 // teaches f1 how to handle `item` since `item` is a dom element we'll teach this f1
 // instance how to handle dom elements
-.teach( require( 'f1-dom' ) )
+.parsers( require( 'f1-dom' ) )
 // tell f1 what should be the initial state
 .init( 'out' );
 
@@ -107,7 +107,7 @@ To construct an `f1` instance you can pass in an optional settings object. The f
   onUpdate: listenerUpdater, // this callback will be called whenever f1 is updating
   
   // this is an object which contains all elements/items that you will be animating
-  toAnimate: { 
+  targets: { 
     bg: bgElement 
   }, 
 
@@ -134,19 +134,19 @@ To construct an `f1` instance you can pass in an optional settings object. The f
 
   // an array of functions which will be able to take values
   // from a state define in states and apply it to the 
-  // items defined in toAnimate
-  teach: [ applyAlpha ]
+  // items defined in targets
+  parsers: [ applyAlpha ]
 }
 ```
 
-### f1.toAnimate( targets )
+### f1.targets( targets )
 
 define which items are going to be animated. Pass in an object
 which will look something like this:
 ```javascript
 var ui = require( 'f1' )();
 
-ui.toAnimate( {
+ui.targets( {
 
  itemToAnimate1: find( '#itemToAnimate1' ),
  itemToAnimate2: find( '#itemToAnimate2' )
@@ -320,7 +320,7 @@ associate to data which will be defined when setting up states in the
  There the animation is the same as in the previous example however `alpha` will be calculated using
  a custom transition function.
 
-### `f1.teach( parseMethods )`
+### `f1.parsers( parseMethods )`
 
  `f1` can target many different platforms. How it does this is by learning
  how to parse defined states properties and applying it items you'd like

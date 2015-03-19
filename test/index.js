@@ -16,7 +16,7 @@ var btn = ui( {
 });
 
 btn
-.teach( function( item, data ) {
+.targets( function( item, data ) {
 
   item.x = data.position[ 0 ];
   item.y = data.position[ 1 ];
@@ -43,7 +43,7 @@ btn
 
   'idle', 'post'
 )
-.toAnimate( {
+.parsers( {
 
   bg: btnEL
 })
