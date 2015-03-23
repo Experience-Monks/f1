@@ -345,10 +345,11 @@ associate to data which will be defined when setting up states in the
  states and transitions are missing. The initial state for the `f1` instance
  should be passed in.
 
-### `f1.go( state )`
+### `f1.go( state, [cb] )`
 
- Will tell `f1` to go to another state. Calling `go` will cause `f1` to calculate a path defined
- through transitions to the state which was passed to it.
+ Will tell `f1` to go to another state. Calling `go` will cause `f1` to calculate a path defined through transitions to the state which was passed to it.
+
+ An optional callback can be passed which is called once `f1` has reached that state.
 
 ### `f1.update()`
 
