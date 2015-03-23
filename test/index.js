@@ -48,7 +48,10 @@ btn
   bg: btnEL
 })
 .init( 'pre' )
-.go( 'rollOver' );
+.go( 'rollOver', function() {
+
+  console.log( 'rollOver callback finished' );
+});
 
 
 

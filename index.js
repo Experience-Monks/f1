@@ -377,11 +377,12 @@ f1.prototype = {
    * through transitions to the state which was passed to it.
    * 
    * @param  {String} state The new state you'd like to go to
+   * @param {Function} [cb] An optional callback which will be called once f1 reaches the state
    * @chainable
    */
-  go: function( state ) {
+  go: function( state, cb ) {
 
-    this.driver.go( state );
+    this.driver.go( state, cb );
 
     return this;
   },
