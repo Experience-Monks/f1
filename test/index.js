@@ -1,62 +1,103 @@
-var ui = require( './..' );
+var f1 = require( './..' );
+var test = require('tape');
+var rightNow = require('right-now');
 
-var btnEL = {};
+test('animating basic values', function(t) {
 
-var btn = ui( {
+  var test1 = require('./test1');
+  var testData = [];
+  var timeStart = rightNow();
 
-  onState: function( value, state ) {
+  var item = {};
+  var onStateExpectedValue = [-34.333, 260.5, 260.5, 540.3];
+  var onStateItemValues = [];
+  var onStateDataValues = [];
+  var calledOnUpdate = false;
 
-    console.log( 'onState --> ', state, JSON.stringify( value ) );
-  },
+  var time;
 
-  onUpdate: function( value, state, time ) {
+  f1( {
+    onState: function(data, state) {
+      onStateDataValues.push(data.item.value);
+      onStateItemValues.push(item.value);
+    },
 
-    console.log( 'onUpdate --> ', state, JSON.stringify( value ) );
-  }
-});
+    onUpdate: function(data, state, time) {
+      calledOnUpdate = true;
+    }
+  })
+  .states(test1.states)
+  .transitions(test1.transitions)
+  .targets({ item: item })
+  .parsers([
+    function( item, data ) {
 
-btn
-.targets( function( item, data ) {
-
-  item.x = data.position[ 0 ];
-  item.y = data.position[ 1 ];
-  item.alpha = data.alpha;
-})
-.states( require( './states' ) )
-.transitions( 
-
-  'pre', 'idle', { duration: 1 },
-
-  'idle', 'rollOver', {
-    bg: {
-
-      position: function( time, start, end ) {
-
-        return [ 333, 333 ];
+      for( var i in data ) {
+        item[ i ] = data[ i ];
       }
     }
-  },
+  ])
+  .init( 'a' )
+  .go( 'c', function() {
 
-  'rollOver', 'idle', {
-    bg: { duration: 0.5 }
-  },
+    t.ok(calledOnUpdate, 'did onUpdate');
+    t.deepEqual(onStateItemValues, onStateDataValues, 'data and item were always the same onState update');
+    t.deepEqual(onStateItemValues, onStateExpectedValue, 'expected values for state updates were correct');
 
-  'idle', 'post'
-)
-.parsers( {
-
-  bg: btnEL
-})
-.init( 'pre' )
-.go( 'rollOver', function() {
-
-  console.log( 'rollOver callback finished' );
+    t.end();
+  });
 });
 
 
 
-// hookup( {
 
-//   mouseover: 'rollOver',
-//   mouseout: 'idle'
-// });
+test('animating generated states', function(t) {
+
+  var test1 = require('./test2');
+  var testData = [];
+  var timeStart = rightNow();
+
+  var item = {};
+  var onStateState = [];
+  var onStateStatExpected = ["a", "b", "b", "c"];
+  var onStateExpectedValue = [0, 260.5, 260.5, 540.3];
+  var onStateItemValues = [];
+  var onStateDataValues = [];
+  var calledOnUpdate = false;
+
+  var time;
+
+  f1( {
+    onState: function(data, state) {
+      onStateDataValues.push(data.item.value);
+      onStateItemValues.push(item.value);
+
+      onStateState.push(state);
+    },
+
+    onUpdate: function(data, state, time) {
+      calledOnUpdate = true;
+    }
+  })
+  .states(test1.states)
+  .transitions(test1.transitions)
+  .targets({ item: item })
+  .parsers([
+    function( item, data ) {
+
+      for( var i in data ) {
+        item[ i ] = data[ i ];
+      }
+    }
+  ])
+  .init( 'a' )
+  .go( 'c', function() {
+
+    t.deepEqual(onStateState, onStateStatExpected, 'ran through states in order');
+    t.ok(calledOnUpdate, 'did onUpdate');
+    t.deepEqual(onStateItemValues, onStateDataValues, 'data and item were always the same onState update');
+    t.deepEqual(onStateItemValues, onStateExpectedValue, 'expected values for state updates were correct');
+
+    t.end();
+  });
+});
