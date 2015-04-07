@@ -24,43 +24,55 @@ ui
 // will be used when defining states
 .targets( {
 
-  item: find( '#bg' )
+item: find( '#bg' )
 })
 // this will tell f1 what item should look like in each state
 .states( {
-  
-  out: {
 
-    item: {
+out: {
 
-      alpha: 0, // opacity
-      position: [ 0, -100, 0 ] // transform x, y, z
-    }
-  },
+  item: {
 
-  idle: {
-
-    item: {
-
-      alpha: 1, // opacity
-      position: [ 0, 0, 0 ] // transform x, y, z
-    }
-  },
-
-  rollover: {
-
-    item: {
-
-      alpha: 0.5, // opacity
-      position: [ -50, 0, 0 ] // transform x, y, z
-    }
+    alpha: 0, // opacity
+    position: [ 0, -100, 0 ] // transform x, y, z
   }
+},
+
+idle: {
+
+  item: {
+
+    alpha: 1, // opacity
+    position: [ 0, 0, 0 ] // transform x, y, z
+  }
+},
+
+rollover: {
+
+  item: {
+
+    alpha: 0.5, // opacity
+    position: [ -50, 0, 0 ] // transform x, y, z
+  }
+}
 })
 // the following defines how f1 can move from state to state
 .transitions( [ 
-  'out', 'idle', { duration: 3 },
-  'idle', 'rollover', { duration: 0.5, ease: eases.expoOut },
-  'rollover', 'idle', { duration: 0.25, ease: eases.expoIn }
+{
+  from: 'out',
+  to: 'idle',
+  animation: { duration: 3 }
+},
+{
+  from: 'idle',
+  to: 'rollover',
+  animation: { duration: 0.5, ease: eases.expoOut }
+},
+{
+  from: 'rollover',
+  to: 'idle',
+  animation: { duration: 0.25, ease: eases.expoIn }
+}
 ])
 // teaches f1 how to handle `item` since `item` is a dom element we'll teach this f1
 // instance how to handle dom elements
@@ -78,14 +90,14 @@ container = find( '#container' ); // contains the item
 
 container.addEventListener( 'mouseenter', function() {
 
-  // the following will tell f1 that it should go to the rollover state
-  ui.go( 'rollover' );
+// the following will tell f1 that it should go to the rollover state
+ui.go( 'rollover' );
 });
 
 el.addEventListener( 'mouseleave', function() {
-  
-  // the following will tell f1 that it should go to the idle state
-  ui.go( 'idle' );
+
+// the following will tell f1 that it should go to the idle state
+ui.go( 'idle' );
 });
 ```
 
@@ -103,39 +115,39 @@ ui = new f1( [ settings ] );
 To construct an `f1` instance you can pass in an optional settings object. The following are properties you can pass in settings:
 ```javascript
 {
-  onState: listenerState, // this callback will be called whenever f1 reaches a state
-  onUpdate: listenerUpdater, // this callback will be called whenever f1 is updating
-  
-  // this is an object which contains all elements/items that you will be animating
-  targets: { 
-    bg: bgElement 
-  }, 
+onState: listenerState, // this callback will be called whenever f1 reaches a state
+onUpdate: listenerUpdater, // this callback will be called whenever f1 is updating
 
-  // all states for the ui
-  // states are the top level object and anything after that are the properties 
-  // for that state
-  states: { 
-    out: {
+// this is an object which contains all elements/items that you will be animating
+targets: { 
+  bg: bgElement 
+}, 
 
-      bg: { alpha: 0 } 
-    },
+// all states for the ui
+// states are the top level object and anything after that are the properties 
+// for that state
+states: { 
+  out: {
 
-    idle: {
-
-      bg: { alpha: 1 }
-    }
+    bg: { alpha: 0 } 
   },
 
-  // an array which defines the transitions for the ui
-  transitions: [
-    'out', 'idle', // this ui can go from out to idle
-    'idle', 'out' // and idle to out
-  ],
+  idle: {
 
-  // an array of functions which will be able to take values
-  // from a state define in states and apply it to the 
-  // items defined in targets
-  parsers: [ applyAlpha ]
+    bg: { alpha: 1 }
+  }
+},
+
+// an array which defines the transitions for the ui
+transitions: [
+  'out', 'idle', // this ui can go from out to idle
+  'idle', 'out' // and idle to out
+],
+
+// an array of functions which will be able to take values
+// from a state define in states and apply it to the 
+// items defined in targets
+parsers: [ applyAlpha ]
 }
 ```
 
@@ -148,8 +160,8 @@ var ui = require( 'f1' )();
 
 ui.targets( {
 
- itemToAnimate1: find( '#itemToAnimate1' ),
- itemToAnimate2: find( '#itemToAnimate2' )
+itemToAnimate1: find( '#itemToAnimate1' ),
+itemToAnimate2: find( '#itemToAnimate2' )
 });
 ```
 The `Object` being passed in should have variable names which will
@@ -158,15 +170,53 @@ associate to data which will be defined when setting up states in the
 
 ### `f1.states( states )`
 
- defines the states which this `f1` instance will use.
+defines the states which this `f1` instance will use.
 
- States are defined as objects. It could look something like this:
- ```javascript
- var ui = require( 'f1' )();
- 
- ui.states( {
+States are defined as objects. It could look something like this:
+```javascript
+var ui = require( 'f1' )();
 
-  out: {
+ui.states( {
+
+out: {
+  itemToAnimate1: {
+    variableToAnimate: 0
+  },
+
+  itemToAnimate2: {
+    variableToAnimate: 0
+  }
+},
+
+idle: {
+  itemToAnimate1: {
+    variableToAnimate: 1
+  },
+
+  itemToAnimate2: {
+    variableToAnimate: 2
+  }
+}
+});
+```
+Above two states would be created: `out` and `idle`. Both would animate two
+objects: `itemToAnimate1` and `itemToAnimate2`. And in both of those objects
+the property `variableToAnimate` is defined. So if we were to transition from
+`out` to `idle` in `itemToAnimate1` `variableToAnimate` would transition from
+0 to 1 and in `itemToAnimate2` from 0 to 2.
+
+States can also be defined by passing in objects for instance the above could
+be changed to look like this:
+```javascript
+var ui = require( 'f1' )();
+
+ui.states( {
+
+out: function( stateName ) {
+
+  console.log( stateName ); // "out"
+
+  return {
     itemToAnimate1: {
       variableToAnimate: 0
     },
@@ -174,9 +224,14 @@ associate to data which will be defined when setting up states in the
     itemToAnimate2: {
       variableToAnimate: 0
     }
-  },
+  };
+},
 
-  idle: {
+idle: function( stateName ) {
+
+  console.log( stateName ); // "idle"
+
+  return {
     itemToAnimate1: {
       variableToAnimate: 1
     },
@@ -184,177 +239,151 @@ associate to data which will be defined when setting up states in the
     itemToAnimate2: {
       variableToAnimate: 2
     }
-  }
- });
- ```
- Above two states would be created: `out` and `idle`. Both would animate two
- objects: `itemToAnimate1` and `itemToAnimate2`. And in both of those objects
- the property `variableToAnimate` is defined. So if we were to transition from
- `out` to `idle` in `itemToAnimate1` `variableToAnimate` would transition from
- 0 to 1 and in `itemToAnimate2` from 0 to 2.
-
- States can also be defined by passing in objects for instance the above could
- be changed to look like this:
- ```javascript
- var ui = require( 'f1' )();
- 
- ui.states( {
-
-  out: function( stateName ) {
-
-    console.log( stateName ); // "out"
- 
-    return {
-      itemToAnimate1: {
-        variableToAnimate: 0
-      },
-  
-      itemToAnimate2: {
-        variableToAnimate: 0
-      }
-    };
-  },
-
-  idle: function( stateName ) {
-
-    console.log( stateName ); // "idle"
- 
-    return {
-      itemToAnimate1: {
-        variableToAnimate: 1
-      },
-  
-      itemToAnimate2: {
-        variableToAnimate: 2
-      }
-    };
-  }
- });
- ```
- The above can be handy when there are many items which states must be defined for
- instance a menu with many buttons.
+  };
+}
+});
+```
+The above can be handy when there are many items which states must be defined for
+instance a menu with many buttons.
 
 
 
 ### `f1.transitions( transitions )`
 
- defines how this `f1` instance can move between states. 
+defines how this `f1` instance can move between states. 
 
- For instance if we had two states out and idle you could define your transitions
- like this:
+For instance if we had two states out and idle you could define your transitions
+like this:
 
- ```javascript
- var ui = require( 'f1' )();
- 
- ui.transitions( [
-   'out', 'idle', // defines that you can go from the out state to the idle state
-   'idle', 'out' // defines that you can go from the idle state to the out state
- ]);
- ```
+```javascript
+var ui = require( 'f1' )();
 
- Note that transitions are not bi-directional.
+ui.transitions( [
+  { from: 'idle', to: 'rollOver', animation: { duration: 0.25 } },
+  { from: 'rollOver', to: 'idle', animation: { duration: 0.1 } }
+]);
+```
 
- If you simply just defined state names a default animation would be applied between
- states. This default transition will have a duration of 0.5 seconds and use no ease.
+Note that transitions are not bi-directional.
 
- If you want to modify the animation duration and ease you can define your transitions
- like this:
+If you simply just defined `from` and `to` a default animation would be applied between states. This default transition will have a duration of 0.5 seconds and use no ease.
 
- ```javascript
- var eases = require( 'eases' );
- var ui = require( 'f1' )();
- 
- ui.transitions( [
-   'out', 'idle', { duration: 1, ease: eases.expoOut }, 
-   'idle', 'out', { duration: 0.5, ease: eases.expoIn }
- ]);
- ```
+If you want to modify the animation duration and ease you can define your transitions like this:
 
- Defining your transitions using the above syntax will cause all properties to animate
- using the duration and ease defined. 
+```javascript
+var eases = require( 'eases' );
+var ui = require( 'f1' )();
 
- Ease functions should take a time property between 0-1 and return a modified value between
- 0-1.
- 
- You can also animate properties individually. Here passing a delay maybe sometimes 
- userful:
- 
- ```javascript
- var eases = require( 'eases' );
- var ui = require( 'f1' )();
- 
- ui.transitions( [
-   'out', 'idle', { 
-     duration: 1, ease: eases.expoOut,
+ui.transitions( [
+  { 
+    from: 'idle', 
+    to: 'rollOver', 
+    animation: { 
+      duration: 0.25,
+      ease: eases.quadOut
+    } 
+  },
+  { 
+    from: 'rollOver', 
+    to: 'idle', 
+    animation: { 
+      duration: 0.1 
+      ease: eases.expoOut
+    } 
+  }
+]);
+```
 
-     position: { duration: 0.5, delay: 0.5, ease: eases.quadOut },
-     alpha: { duration: 0.5 }
-    }, 
-   'idle', 'out', { duration: 0.5, ease: eases.expoIn }
- ]);
- ```
+Defining your transitions using the above syntax will cause all properties to animate using the duration and ease defined. 
 
- In that example every property besides `position` and `alpha` will have a duration of one second
- using the `eases.quadOut` ease equation. `position` will have a duration of 0.5 seconds and will
- be delayed 0.5 seconds and will use the `eases.quadOut` easing function. `alpha` will simply have
- a duration of 0.5 seconds.
+Ease functions should take a time property between 0-1 and return a modified value between 0-1.
 
- For advanced transitions you can pass in a function instead like so:
- ```javascript
- 
- ui.transitions( [
-   'out', 'idle', { 
-     duration: 1, ease: eases.expoOut,
+You can also animate properties individually. Here passing a delay maybe sometimes userful:
 
-     position: { duration: 0.5, delay: 0.5, ease: eases.quadOut },
-     
-     alpha: function( time, start, end ) {
+```javascript
+var eases = require( 'eases' );
+var ui = require( 'f1' )();
 
+ui.transitions( [
+  {
+    from: 'out',
+    to: 'idle',
+    animation: { 
+      duration: 1, ease: eases.expoOut,
+
+      position: { duration: 0.5, delay: 0.5, ease: eases.quadOut },
+      alpha: { duration: 0.5 }
+    }
+  },
+  {
+    from: 'idle',
+    to: 'out',
+    animation: { duration: 0.5, ease: eases.expoIn }
+  }
+]);
+```
+
+In that example every property besides `position` and `alpha` will have a duration of one second using the `eases.quadOut` ease equation. `position` will have a duration of 0.5 seconds and will be delayed 0.5 seconds and will use the `eases.quadOut` easing function. `alpha` will simply have a duration of 0.5 seconds.
+
+For advanced transitions you can pass in a function instead like so:
+```javascript
+
+ui.transitions( [
+  {
+    from: 'out',
+    to: 'idle',
+    animation: { 
+      duration: 1, ease: eases.expoOut,
+      alpha: function( time, start, end ) {
         return ( end - start ) * time + start;
-     }
-    }, 
-   'idle', 'out', { duration: 0.5, ease: eases.expoIn }
- ]);
- ```
- 
- There the animation is the same as in the previous example however `alpha` will be calculated using
- a custom transition function.
+      }
+    }
+  },
+  {
+    from: 'idle',
+    to: 'out',
+    animation: { duration: 0.5, ease: eases.expoIn }
+  }
+]);
+```
+
+There the animation is the same as in the previous example however `alpha` will be calculated using
+a custom transition function.
 
 ### `f1.parsers( parseMethods )`
 
- `f1` can target many different platforms. How it does this is by learning
- how to parse defined states properties and applying it items you'd like
- to animate.
+`f1` can target many different platforms. How it does this is by learning
+how to parse defined states properties and applying it items you'd like
+to animate.
 
- An Array of functions or multiple functions can be passes to `f1` each function
- will read data from the state and apply it to the object being animated.
+An Array of functions or multiple functions can be passes to `f1` each function
+will read data from the state and apply it to the object being animated.
 
- An example function that sets the left position of a dom element might look like
- this:
- ```javascript
- function setLeft( item, data ) {
- 
+An example function that sets the left position of a dom element might look like
+this:
+```javascript
+function setLeft( item, data ) {
   item.style.left = data.left + 'px';
- }
- ```
+}
+```
 
 
 ### `f1.init( initState )`
 
- Initializes `f1`. `init` will throw errors if required parameters such as
- states and transitions are missing. The initial state for the `f1` instance
- should be passed in.
+Initializes `f1`. `init` will throw errors if required parameters such as
+states and transitions are missing. The initial state for the `f1` instance
+should be passed in.
 
 ### `f1.go( state, [cb] )`
 
- Will tell `f1` to go to another state. Calling `go` will cause `f1` to calculate a path defined through transitions to the state which was passed to it.
+Will tell `f1` to go to another state. Calling `go` will cause `f1` to calculate a path defined through transitions to the state which was passed to it.
 
- An optional callback can be passed which is called once `f1` has reached that state.
+An optional callback can be passed which is called once `f1` has reached that state.
 
 ### `f1.update()`
 
- Will force `f1` to update. This is useful if you're updating a states values lets say by mouse movement.
- You'd call `f1.update` to ensure the state gets applied.
+Will force `f1` to update. This is useful if you're updating a states values lets say by mouse movement.
+You'd call `f1.update` to ensure the state gets applied.
 
 
 

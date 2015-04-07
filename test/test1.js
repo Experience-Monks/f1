@@ -3,9 +3,16 @@ var linear = require('./linear');
 module.exports = {
 
   transitions: [
-
-    'a', 'b', { duration: 0.25, ease: linear },
-    'b', 'c', { duration: 0.3, ease: linear }
+    {
+      from: 'a',
+      to: 'b',
+      animation: { duration: 0.25, ease: linear }
+    },
+    {
+      from: 'b',
+      to: 'c',
+      animation: { duration: 0.3, ease: linear }
+    }
   ],
 
   states: {

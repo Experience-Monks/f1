@@ -15,7 +15,7 @@ test('animating basic values', function(t) {
   var calledOnUpdate = false;
 
   var time;
-
+  
   f1( {
     onState: function(data, state) {
       onStateDataValues.push(data.item.value);
