@@ -75,13 +75,24 @@ function f1( settings ) {
   this.onUpdate = settings.onUpdate || noop;
 
   this.data = null; // current animation data
-  this.animatables = this.targets( settings.targets ) || null;
-  this.defStates = settings.states || null;
-  this.defTransitions = settings.transitions || null;
+  this.animatables = null;
+  this.defStates = null;
+  this.defTransitions = null;
   this.parser = null;
 
-  if( settings.parsers ) {
+  if(settings.transitions) {
+    this.transitions(settings.transitions);
+  }
 
+  if(settings.states) {
+    this.states(settings.states);
+  }
+
+  if(settings.targets) {
+    this.targets(settings.targets);
+  }
+
+  if(settings.parsers) {
     this.parsers( settings.parsers );
   }
 
