@@ -141,7 +141,8 @@ f1.prototype = {
             // TODO. Note: by default it's in the form of [{animation: {elementId1: { properties }, anotherElement: { properties }}, from, to}]
             // should change it to [{animation: { properties }, from, to}]
             return [];
-          }
+          },
+          $go: instance.go.bind(instance)
         };
         // add to global so the devtool can access the list of elements
         global.f1targets[elementId] = elementData;
