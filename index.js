@@ -1,11 +1,15 @@
 var kimi = require( 'kimi' ),
     f1Parser = require( 'f1-parser' ),
     getTween = require( 'tween-function' ),
-    noop = require( 'no-op' );
+    noop = require( 'no-op' ),
+    _ = require('lodash');
 
 var parseStates = require( './lib/states/parseStates' ),
     parseTransitions = require( './lib/transitions/parseTransitions' ),
     parseAnimatables = require( './lib/animatables/parseAnimatables' );
+
+// for the devtool
+global.f1targets = global.f1targets || {};
 
 module.exports = f1;
 
@@ -116,6 +120,39 @@ f1.prototype = {
    * @chainable
    */
   targets: function( targets ) {
+
+    var instance = this;
+
+    if (targets) {
+      _.forEach(targets, function (el, elementId) {
+        var elementData = {
+          id: elementId,
+          get states() {
+            return _.keys(instance.defStates).reduce(function (dict, key) {
+              dict[key] = instance.defStates[key][elementId];
+              return dict;
+            }, {});
+          },
+          set states(newStates) {
+            // TODO: what to do about state deletions? this only handles modifications or new states
+            Object.keys(newStates).forEach(function (stateId) {
+              instance.defStates[stateId][elementId] = newStates[stateId];
+            });
+            instance.go(instance.state);
+          },
+          get transitions() {
+            // TODO. Note: by default it's in the form of [{animation: {elementId1: { properties }, anotherElement: { properties }}, from, to}]
+            // should change it to [{animation: { properties }, from, to}]
+            return [];
+          },
+          $go: instance.go.bind(instance)
+        };
+        // add to global so the devtool can access the list of elements
+        global.f1targets[elementId] = elementData;
+        // attach to the DOM node so the inspector can operate on the element
+        el.__f1__ = elementData;
+      });
+    }
 
     this.animatables = parseAnimatables( targets );
 
