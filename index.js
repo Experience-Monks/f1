@@ -128,7 +128,10 @@ f1.prototype = {
         var elementData = {
           id: elementId,
           get states() {
-            return _.zipObject(_.keys(instance.defStates), _.pluck(instance.defStates, elementId));
+            return _.keys(instance.defStates).reduce(function (dict, key) {
+              dict[key] = instance.defStates[key][elementId];
+              return dict;
+            }, {});
           },
           set states(newStates) {
             // TODO: what to do about state deletions? this only handles modifications or new states
