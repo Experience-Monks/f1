@@ -1,4 +1,4 @@
-var f1 = require( './..' );
+var f1 = require('./..');
 var test = require('tape');
 var rightNow = require('right-now');
 
@@ -16,6 +16,8 @@ test('animating basic values', function(t) {
 
   var time;
   
+  console.log('here');
+
   f1( {
     onState: function(data, state) {
       onStateDataValues.push(data.item.value);
@@ -30,14 +32,14 @@ test('animating basic values', function(t) {
   .transitions(test1.transitions)
   .targets({ item: item })
   .parsers([
-    function( item, data ) {
+    function(item, data) {
 
-      for( var i in data ) {
+      for(var i in data) {
         item[ i ] = data[ i ];
       }
     }
   ])
-  .init( 'a' )
+  .init('a')
   .go( 'c', function() {
 
     t.ok(calledOnUpdate, 'did onUpdate');
@@ -83,14 +85,14 @@ test('animating generated states', function(t) {
   .transitions(test1.transitions)
   .targets({ item: item })
   .parsers([
-    function( item, data ) {
+    function(item, data) {
 
-      for( var i in data ) {
+      for(var i in data) {
         item[ i ] = data[ i ];
       }
     }
   ])
-  .init( 'a' )
+  .init('a')
   .go( 'c', function() {
 
     t.deepEqual(onStateState, onStateStatExpected, 'ran through states in order');

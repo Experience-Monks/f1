@@ -12,9 +12,9 @@ A stateful ui library
 
 Using `f1` in the dom:
 ```javascript
-var f1 = require( 'f1' );
-var find = require( 'dom-select' );
-var eases = require( 'eases' );
+var f1 = require('f1');
+var find = require('dom-select');
+var eases = require('eases');
 
 var ui = new f1();
 var container;
@@ -24,7 +24,7 @@ ui
 // will be used when defining states
 .targets( {
 
-item: find( '#bg' )
+item: find('#bg')
 })
 // this will tell f1 what item should look like in each state
 .states( {
@@ -76,28 +76,28 @@ rollover: {
 ])
 // teaches f1 how to handle `item` since `item` is a dom element we'll teach this f1
 // instance how to handle dom elements
-.parsers( require( 'f1-dom' ) )
+.parsers(require( 'f1-dom' ))
 // tell f1 what should be the initial state
-.init( 'out' );
+.init('out');
 
 // this will tell f1 to animate to the idle state from the initial state (out)
-ui.go( 'idle' );
+ui.go('idle');
 
 
 // the following will just add mouse events to a container
 // which contains #item
-container = find( '#container' ); // contains the item
+container = find('#container'); // contains the item
 
 container.addEventListener( 'mouseenter', function() {
 
 // the following will tell f1 that it should go to the rollover state
-ui.go( 'rollover' );
+ui.go('rollover');
 });
 
 el.addEventListener( 'mouseleave', function() {
 
 // the following will tell f1 that it should go to the idle state
-ui.go( 'idle' );
+ui.go('idle');
 });
 ```
 
@@ -105,11 +105,11 @@ ui.go( 'idle' );
 
 ### Constructor
 ```javascript
-ui = f1( [ settigns ] );
+ui = f1([ settigns ]);
 ```
 or 
 ```javascript
-ui = new f1( [ settings ] );
+ui = new f1([ settings ]);
 ```
 
 To construct an `f1` instance you can pass in an optional settings object. The following are properties you can pass in settings:
@@ -151,30 +151,30 @@ parsers: [ applyAlpha ]
 }
 ```
 
-### f1.targets( targets )
+### f1.targets(targets)
 
 define which items are going to be animated. Pass in an object
 which will look something like this:
 ```javascript
-var ui = require( 'f1' )();
+var ui = require('f1')();
 
 ui.targets( {
 
-itemToAnimate1: find( '#itemToAnimate1' ),
-itemToAnimate2: find( '#itemToAnimate2' )
+itemToAnimate1: find('#itemToAnimate1'),
+itemToAnimate2: find('#itemToAnimate2')
 });
 ```
 The `Object` being passed in should have variable names which will
 associate to data which will be defined when setting up states in the
 `f1.states` method. The value which you pass these can be anything.
 
-### `f1.states( states )`
+### `f1.states(states)`
 
 defines the states which this `f1` instance will use.
 
 States are defined as objects. It could look something like this:
 ```javascript
-var ui = require( 'f1' )();
+var ui = require('f1')();
 
 ui.states( {
 
@@ -208,13 +208,13 @@ the property `variableToAnimate` is defined. So if we were to transition from
 States can also be defined by passing in objects for instance the above could
 be changed to look like this:
 ```javascript
-var ui = require( 'f1' )();
+var ui = require('f1')();
 
 ui.states( {
 
-out: function( stateName ) {
+out: function(stateName) {
 
-  console.log( stateName ); // "out"
+  console.log(stateName); // "out"
 
   return {
     itemToAnimate1: {
@@ -227,9 +227,9 @@ out: function( stateName ) {
   };
 },
 
-idle: function( stateName ) {
+idle: function(stateName) {
 
-  console.log( stateName ); // "idle"
+  console.log(stateName); // "idle"
 
   return {
     itemToAnimate1: {
@@ -248,7 +248,7 @@ instance a menu with many buttons.
 
 
 
-### `f1.transitions( transitions )`
+### `f1.transitions(transitions)`
 
 defines how this `f1` instance can move between states. 
 
@@ -256,7 +256,7 @@ For instance if we had two states out and idle you could define your transitions
 like this:
 
 ```javascript
-var ui = require( 'f1' )();
+var ui = require('f1')();
 
 ui.transitions( [
   { from: 'idle', to: 'rollOver', animation: { duration: 0.25 } },
@@ -271,8 +271,8 @@ If you simply just defined `from` and `to` a default animation would be applied 
 If you want to modify the animation duration and ease you can define your transitions like this:
 
 ```javascript
-var eases = require( 'eases' );
-var ui = require( 'f1' )();
+var eases = require('eases');
+var ui = require('f1')();
 
 ui.transitions( [
   { 
@@ -301,8 +301,8 @@ Ease functions should take a time property between 0-1 and return a modified val
 You can also animate properties individually. Here passing a delay maybe sometimes userful:
 
 ```javascript
-var eases = require( 'eases' );
-var ui = require( 'f1' )();
+var eases = require('eases');
+var ui = require('f1')();
 
 ui.transitions( [
   {
@@ -334,8 +334,8 @@ ui.transitions( [
     to: 'idle',
     animation: { 
       duration: 1, ease: eases.expoOut,
-      alpha: function( time, start, end ) {
-        return ( end - start ) * time + start;
+      alpha: function(time, start, end) {
+        return (end - start) * time + start;
       }
     }
   },
@@ -350,7 +350,7 @@ ui.transitions( [
 There the animation is the same as in the previous example however `alpha` will be calculated using
 a custom transition function.
 
-### `f1.parsers( parseMethods )`
+### `f1.parsers(parseMethods)`
 
 `f1` can target many different platforms. How it does this is by learning
 how to parse defined states properties and applying it items you'd like
@@ -362,19 +362,19 @@ will read data from the state and apply it to the object being animated.
 An example function that sets the left position of a dom element might look like
 this:
 ```javascript
-function setLeft( item, data ) {
+function setLeft(item, data) {
   item.style.left = data.left + 'px';
 }
 ```
 
 
-### `f1.init( initState )`
+### `f1.init(initState)`
 
 Initializes `f1`. `init` will throw errors if required parameters such as
 states and transitions are missing. The initial state for the `f1` instance
 should be passed in.
 
-### `f1.go( state, [cb] )`
+### `f1.go(state, [cb])`
 
 Will tell `f1` to go to another state. Calling `go` will cause `f1` to calculate a path defined through transitions to the state which was passed to it.
 

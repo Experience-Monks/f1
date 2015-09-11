@@ -1,11 +1,11 @@
-var kimi = require( 'kimi' ),
-    f1Parser = require( 'f1-parser' ),
-    getTween = require( 'tween-function' ),
-    noop = require( 'no-op' );
+var kimi = require('kimi'),
+    f1Parser = require('f1-parser'),
+    getTween = require('tween-function'),
+    noop = require('no-op');
 
-var parseStates = require( './lib/states/parseStates' ),
-    parseTransitions = require( './lib/transitions/parseTransitions' ),
-    parseAnimatables = require( './lib/animatables/parseAnimatables' );
+var parseStates = require('./lib/states/parseStates'),
+    parseTransitions = require('./lib/transitions/parseTransitions'),
+    parseAnimatables = require('./lib/animatables/parseAnimatables');
 
 module.exports = f1;
 
@@ -13,11 +13,11 @@ module.exports = f1;
  * To construct a new `f1` instance you can do it in two ways.
  * 
  * ```javascript
- * ui = f1( [ settigns ] );
+ * ui = f1([ settigns ]);
  * ```
  * or 
  * ```javascript
- * ui = new f1( [ settings ] );
+ * ui = new f1([ settings ]);
  * ```
  * 
  * To construct an `f1` instance you can pass in an optional settings object. The following are properties you can pass in settings:
@@ -62,11 +62,11 @@ module.exports = f1;
  * @param  {Object} [settings] An optional settings Object described above
  * @chainable
  */
-function f1( settings ) {
+function f1(settings) {
 
-  if( !( this instanceof f1 ) ) {
+  if(!(this instanceof f1)) {
 
-    return new f1( settings );
+    return new f1(settings);
   }
 
   settings = settings || {};
@@ -93,13 +93,13 @@ function f1( settings ) {
   }
 
   if(settings.parsers) {
-    this.parsers( settings.parsers );
+    this.parsers(settings.parsers);
   }
 
   this.driver = kimi( {
 
-    onState: _onState.bind( this ),
-    onUpdate: _onUpdate.bind( this )
+    onState: _onState.bind(this),
+    onUpdate: _onUpdate.bind(this)
   });
 }
 
@@ -109,12 +109,12 @@ f1.prototype = {
    * define which items are going to be animated. Pass in an object
    * which will look something like this:
    * ```javascript
-   * var ui = require( 'f1' )();
+   * var ui = require('f1')();
    *
    * ui.targets( {
    *
-   *  itemToAnimate1: find( '#itemToAnimate1' ),
-   *  itemToAnimate2: find( '#itemToAnimate2' )
+   *  itemToAnimate1: find('#itemToAnimate1'),
+   *  itemToAnimate2: find('#itemToAnimate2')
    * });
    * ```
    * The `Object` being passed in should have variable names which will
@@ -126,9 +126,9 @@ f1.prototype = {
    * @param  {Object} targets An Object which will define which items will be animated
    * @chainable
    */
-  targets: function( targets ) {
+  targets: function(targets) {
 
-    this.animatables = parseAnimatables( targets );
+    this.animatables = parseAnimatables(targets);
 
     return this;
   },
@@ -138,7 +138,7 @@ f1.prototype = {
    *
    * States are defined as objects. It could look something like this:
    * ```javascript
-   * var ui = require( 'f1' )();
+   * var ui = require('f1')();
    * 
    * ui.states( {
    *
@@ -172,13 +172,13 @@ f1.prototype = {
    * States can also be defined by passing in objects for instance the above could
    * be changed to look like this:
    * ```javascript
-   * var ui = require( 'f1' )();
+   * var ui = require('f1')();
    * 
    * ui.states( {
    *
-   *  out: function( stateName ) {
+   *  out: function(stateName) {
    *
-   *    console.log( stateName ); // "out"
+   *    console.log(stateName); // "out"
    * 
    *    return {
    *      itemToAnimate1: {
@@ -191,9 +191,9 @@ f1.prototype = {
    *    };
    *  },
    *
-   *  idle: function( stateName ) {
+   *  idle: function(stateName) {
    *
-   *    console.log( stateName ); // "idle"
+   *    console.log(stateName); // "idle"
    * 
    *    return {
    *      itemToAnimate1: {
@@ -213,7 +213,7 @@ f1.prototype = {
    * @param  {Object} states defines all of the states for an `f1` instance
    * @chainable
    */
-  states: function( states ) {
+  states: function(states) {
 
     this.defStates = states;
 
@@ -227,7 +227,7 @@ f1.prototype = {
    * like this:
    *
    * ```javascript
-   * var ui = require( 'f1' )();
+   * var ui = require('f1')();
    * 
    * ui.transitions( [
    *   'out', 'idle', // defines that you can go from the out state to the idle state
@@ -244,8 +244,8 @@ f1.prototype = {
    * like this:
    *
    * ```javascript
-   * var eases = require( 'eases' );
-   * var ui = require( 'f1' )();
+   * var eases = require('eases');
+   * var ui = require('f1')();
    * 
    * ui.transitions( [
    *   'out', 'idle', { duration: 1, ease: eases.expoOut }, 
@@ -263,8 +263,8 @@ f1.prototype = {
    * userful:
    * 
    * ```javascript
-   * var eases = require( 'eases' );
-   * var ui = require( 'f1' )();
+   * var eases = require('eases');
+   * var ui = require('f1')();
    * 
    * ui.transitions( [
    *   'out', 'idle', { 
@@ -291,9 +291,9 @@ f1.prototype = {
    *
    *     position: { duration: 0.5, delay: 0.5, ease: eases.quadOut },
    *     
-   *     alpha: function( time, start, end ) {
+   *     alpha: function(time, start, end) {
    *
-   *        return ( end - start ) * time + start;
+   *        return (end - start) * time + start;
    *     }
    *    }, 
    *   'idle', 'out', { duration: 0.5, ease: eases.expoIn }
@@ -306,9 +306,9 @@ f1.prototype = {
    * @param  {Array} transitions An array which descriptes transitions
    * @chainable
    */
-  transitions: function( transitions ) {
+  transitions: function(transitions) {
 
-    this.defTransitions = Array.isArray( transitions ) ? transitions : arguments;
+    this.defTransitions = Array.isArray(transitions) ? transitions : arguments;
 
     return this;
   },
@@ -324,7 +324,7 @@ f1.prototype = {
    * An example function that sets the left position of a dom element might look like
    * this:
    * ```javascript
-   * function setLeft( item, data ) {
+   * function setLeft(item, data) {
    * 
    *  item.style.left = data.left + 'px';
    * }
@@ -336,20 +336,20 @@ f1.prototype = {
    */
   parsers: function() {
 
-    var parseMethods = Array.prototype.slice.call( arguments );
+    var parseMethods = Array.prototype.slice.call(arguments);
 
     this.parser = this.parser || new f1Parser();
 
     // if it's an array of parsers
-    if( Array.isArray( arguments[ 0 ] ) ) {
+    if(Array.isArray(arguments[ 0 ])) {
 
       parseMethods = arguments[ 0 ];
     }
 
-    parseMethods.forEach( function( parser ) {
+    parseMethods.forEach(function( parser) {
 
-      this.parser.parsers( parser );
-    }.bind( this ));
+      this.parser.parsers(parser);
+    }.bind(this));
 
     return this;
   },
@@ -362,22 +362,22 @@ f1.prototype = {
    * @param  {String} Initial state for the `f1` instance
    * @chainable
    */
-  init: function( initState ) {
+  init: function(initState) {
 
     var driver = this.driver;
 
-    if( !this.defStates ) {
+    if(!this.defStates) {
 
-      throw new Error( 'You must define states before attempting to call init' );
-    } else if( !this.defTransitions ) {
+      throw new Error('You must define states before attempting to call init');
+    } else if(!this.defTransitions) {
 
-      throw new Error( 'You must define transitions before attempting to call init' );
+      throw new Error('You must define transitions before attempting to call init');
     } else {
 
-      parseStates( driver, this.defStates );
-      parseTransitions( driver, this.defStates, this.defTransitions );
+      parseStates(driver, this.defStates);
+      parseTransitions(driver, this.defStates, this.defTransitions);
 
-      driver.init( initState );
+      driver.init(initState);
     }
 
     return this;
@@ -391,9 +391,9 @@ f1.prototype = {
    * @param {Function} [cb] An optional callback which will be called once f1 reaches the state
    * @chainable
    */
-  go: function( state, cb ) {
+  go: function(state, cb) {
 
-    this.driver.go( state, cb );
+    this.driver.go(state, cb);
 
     return this;
   },
@@ -406,7 +406,7 @@ f1.prototype = {
    */
   update: function() {
 
-    _onUpdate.call( this, this.data, this.state, this.time );
+    _onUpdate.call(this, this.data, this.state, this.time);
 
     return this;
   },
@@ -427,68 +427,68 @@ f1.prototype = {
    * @param  {Array} [parseFunctions] An optional array of functions which will pull data from the current state and apply
    *                                  it to the `animatable` object.
    */
-  apply: function( animatablePath, animatable, parseFunctions ) {
+  apply: function(animatablePath, animatable, parseFunctions) {
 
     var data = this.data,
         parser = this.parser,
         animationData;
 
     // if parse functions were passed in then create a new parser
-    if( parseFunctions ) {
+    if(parseFunctions) {
 
-      parser = new f1Parser( parseFunctions );
+      parser = new f1Parser(parseFunctions);
     }
 
     // if we have a parser then apply the parsers (parsers set css etc)
-    if( parser ) {
+    if(parser) {
 
-      if( typeof animatablePath == 'string' ) {
+      if(typeof animatablePath == 'string') {
 
-        animatablePath = animatablePath.split( '.' );
+        animatablePath = animatablePath.split('.');
       }
 
       animationData = data[ animatablePath[ 0 ] ];
 
-      for( var i = 1, len = animatablePath.length; i < len; i++ ) {
+      for(var i = 1, len = animatablePath.length; i < len; i++) {
 
         animationData = animationData[ animatablePath[ i ] ];
       }
 
-      parser.parse( animatable, animationData );
+      parser.parse(animatable, animationData);
     }
   }
 };
 
-function _onUpdate( data, state, time ) {
+function _onUpdate(data, state, time) {
 
   var animatablePath, animatable;
 
-  if( data !== undefined && state !== undefined && time !== undefined ) {
+  if(data !== undefined && state !== undefined && time !== undefined) {
 
     this.data = data;
     this.state = state;
     this.time = time;
 
-    if( this.animatables ) {
+    if(this.animatables) {
 
-      for( var i = 0, len = this.animatables.length; i < len; i += 2 ) {
+      for(var i = 0, len = this.animatables.length; i < len; i += 2) {
 
         animatablePath = this.animatables[ i ];
         animatable = this.animatables[ i + 1 ];
 
-        this.apply( animatablePath, animatable );
+        this.apply(animatablePath, animatable);
       }
     }
 
-    this.onUpdate( data, state, time );
+    this.onUpdate(data, state, time);
   }
 }
 
-function _onState( data, state ) {
+function _onState(data, state) {
 
   this.data = data;
   this.state = state;
   this.time = 0;
 
-  this.onState( data, state );
+  this.onState(data, state);
 }
