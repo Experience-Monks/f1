@@ -1,11 +1,15 @@
-var kimi = require('kimi'),
-    f1Parser = require('f1-parser'),
-    getTween = require('tween-function'),
-    noop = require('no-op');
+var kimi = require('kimi');
+var f1Parser = require('f1-parser');
+var getTween = require('tween-function');
+var noop = require('no-op');
+var extend = require('extend');
+var Emitter = require('events').EventEmitter;
 
-var parseStates = require('./lib/states/parseStates'),
-    parseTransitions = require('./lib/transitions/parseTransitions'),
-    parseAnimatables = require('./lib/animatables/parseAnimatables');
+var parseStates = require('./lib/states/parseStates');
+var parseTransitions = require('./lib/transitions/parseTransitions');
+var parseAnimatables = require('./lib/animatables/parseAnimatables');
+
+var numInstances = 0;
 
 module.exports = f1;
 
@@ -25,7 +29,11 @@ module.exports = f1;
  * {
  *   onState: listenerState, // this callback will be called whenever f1 reaches a state
  *   onUpdate: listenerUpdater, // this callback will be called whenever f1 is updating
- *   
+ *
+ *   // you can pass a name for the ui. This is useful when you're using an external tool or want
+ *   // to differentiate between f1 instances
+ *   name: 'someNameForTheUI',
+ * 
  *   // this is an object which contains all elements/items that you will be animating
  *   targets: { 
  *     bg: bgElement 
@@ -69,11 +77,24 @@ function f1(settings) {
     return new f1(settings);
   }
 
+  var emitter = this;
+  var onUpdate = settings.onUpdate || noop;;
+  var onState = settings.onState || noop;
+
+  // this is used to generate a "name" for an f1 instance if one isn't given
+  numInstances++;
+
   settings = settings || {};
 
-  this.onState = settings.onState || noop;
-  this.onUpdate = settings.onUpdate || noop;
+  this.onState = function() {
+    emitter.emit.apply(emitter, getEventArgs('state', arguments));
+  };
 
+  this.onUpdate = function() {
+    emitter.emit.apply(emitter, getEventArgs('update', arguments));
+  };
+
+  this.name = settings.name || 'ui_' + numInstances;
   this.data = null; // current animation data
   this.animatables = null;
   this.defStates = null;
@@ -96,6 +117,7 @@ function f1(settings) {
     this.parsers(settings.parsers);
   }
 
+  // kimi is the man who does all the work under the hood
   this.driver = kimi( {
 
     onState: _onState.bind(this),
@@ -103,7 +125,7 @@ function f1(settings) {
   });
 }
 
-f1.prototype = {
+f1.prototype = extend(Emitter.prototype, {
 
   /**
    * define which items are going to be animated. Pass in an object
@@ -346,7 +368,7 @@ f1.prototype = {
       parseMethods = arguments[ 0 ];
     }
 
-    parseMethods.forEach(function( parser) {
+    parseMethods.forEach(function(parser) {
 
       this.parser.parsers(parser);
     }.bind(this));
@@ -380,7 +402,23 @@ f1.prototype = {
       driver.init(initState);
     }
 
+    if(global.__f1__) {
+      global.__f1__.init(this);
+    } 
+
     return this;
+  },
+
+  /**
+   * Destroys an `f1` instances. This should be called when you don't need the f1 instance anymore.
+   */
+  destroy: function() {
+
+    if(global.__f1__) {
+      global.__f1__.destroy(this);
+    } 
+
+    // TODO: make sure kimi gets destroyed and everything else that's needed
   },
 
   /**
@@ -457,7 +495,16 @@ f1.prototype = {
       parser.parse(animatable, animationData);
     }
   }
-};
+});
+
+function getEventArgs(name, args) {
+
+  args = Array.prototype.slice.apply(args);
+
+  args.unshift(name);
+
+  return args;
+}
 
 function _onUpdate(data, state, time) {
 
