@@ -77,14 +77,14 @@ function f1(settings) {
     return new f1(settings);
   }
 
+  settings = settings || {};
+
   var emitter = this;
-  var onUpdate = settings.onUpdate || noop;;
+  var onUpdate = settings.onUpdate || noop;
   var onState = settings.onState || noop;
 
   // this is used to generate a "name" for an f1 instance if one isn't given
   numInstances++;
-
-  settings = settings || {};
 
   this.onState = function() {
     emitter.emit.apply(emitter, getEventArgs('state', arguments));
