@@ -7,7 +7,7 @@ var Emitter = require('events').EventEmitter;
 
 var parseStates = require('./lib/states/parseStates');
 var parseTransitions = require('./lib/transitions/parseTransitions');
-var parseAnimatables = require('./lib/animatables/parseAnimatables');
+var parseTargets = require('./lib/targets/parseTargets');
 
 var numInstances = 0;
 
@@ -96,7 +96,7 @@ function f1(settings) {
 
   this.name = settings.name || 'ui_' + numInstances;
   this.data = null; // current animation data
-  this.animatables = null;
+  this.defTargets = null;
   this.defStates = null;
   this.defTransitions = null;
   this.parser = null;
@@ -150,8 +150,8 @@ f1.prototype = extend(Emitter.prototype, {
    */
   targets: function(targets) {
 
-    this.animatables = parseAnimatables(targets);
-
+    this.defTargets = parseTargets(targets);
+    
     return this;
   },
 
@@ -516,12 +516,12 @@ function _onUpdate(data, state, time) {
     this.state = state;
     this.time = time;
 
-    if(this.animatables) {
+    if(this.defTargets) {
 
-      for(var i = 0, len = this.animatables.length; i < len; i += 2) {
+      for(var i = 0, len = this.defTargets.length; i < len; i += 2) {
 
-        animatablePath = this.animatables[ i ];
-        animatable = this.animatables[ i + 1 ];
+        animatablePath = this.defTargets[ i ];
+        animatable = this.defTargets[ i + 1 ];
 
         this.apply(animatablePath, animatable);
       }
