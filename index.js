@@ -1,10 +1,10 @@
 var kimi = require('kimi');
-var f1Parser = require('f1-parser');
 var getTween = require('tween-function');
 var noop = require('no-op');
 var extend = require('extend');
 var Emitter = require('events').EventEmitter;
 
+var getParser = require('./lib/parsers/getParser');
 var parseStates = require('./lib/states/parseStates');
 var parseTransitions = require('./lib/transitions/parseTransitions');
 var parseTargets = require('./lib/targets/parseTargets');
@@ -151,7 +151,7 @@ f1.prototype = extend(Emitter.prototype, {
   targets: function(targets) {
 
     this.defTargets = parseTargets(targets);
-    
+
     return this;
   },
 
@@ -360,7 +360,7 @@ f1.prototype = extend(Emitter.prototype, {
 
     var parseMethods = Array.prototype.slice.call(arguments);
 
-    this.parser = this.parser || new f1Parser();
+    this.parser = this.parser || new getParser();
 
     // if it's an array of parsers
     if(Array.isArray(arguments[ 0 ])) {
@@ -474,7 +474,7 @@ f1.prototype = extend(Emitter.prototype, {
     // if parse functions were passed in then create a new parser
     if(parseFunctions) {
 
-      parser = new f1Parser(parseFunctions);
+      parser = new getParser(parseFunctions);
     }
 
     // if we have a parser then apply the parsers (parsers set css etc)

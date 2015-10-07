@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "extend": "^3.0.0",
-    "f1-parser": "^2.0.0",
     "interpolation-builder": "^2.1.0",
     "kimi": "^4.1.2",
     "no-op": "^1.0.3",
