@@ -144,10 +144,12 @@ transitions: [
   'idle', 'out' // and idle to out
 ],
 
-// an array of functions which will be able to take values
-// from a state define in states and apply it to the 
-// items defined in targets
-parsers: [ applyAlpha ]
+ // an Object contains init and update functions. These will be used
+ // to initialize your ui elements and apply state to targets during update
+ parsers: {
+   init: [ initPosition ],
+   update: [ applyPosition ]
+ }
 }
 ```
 
@@ -350,29 +352,45 @@ ui.transitions( [
 There the animation is the same as in the previous example however `alpha` will be calculated using
 a custom transition function.
 
-### `f1.parsers(parseMethods)`
+### `f1.parsers(parserDefinition)`
 
-`f1` can target many different platforms. How it does this is by learning
-how to parse defined states properties and applying it items you'd like
-to animate.
+`f1` can target many different platforms. How it does this is by using parsers which can target different platforms. Parsers apply calculated state objects to targets.
 
-An Array of functions or multiple functions can be passes to `f1` each function
-will read data from the state and apply it to the object being animated.
+If working with the dom for instance your state could define values which will be applied by the parser to the dom elements style object.
 
-An example function that sets the left position of a dom element might look like
-this:
+When calling parsers pass in an Object that can contain variables init, and update. Both should contain an Array's of functions which will be used to either init or update ui.
+
+`init` functions will receive: states definition, targets definition, and transitions definition.
+
+Example:
 ```javascript
-function setLeft(item, data) {
-  item.style.left = data.left + 'px';
+function initPosition(states, targets, transitions) {
+  // usesPosition would check if the position property is used
+  // by states if so initialize targets to be able to do something
+  // with position
+  if(usesPosition(states)) {
+    // do whatever is needed to targets
+    // if the position property is used
+  }
 }
 ```
 
+`update` functions will receive: target and state. Where target could be for instance a dom element and state is the currently calculated state.
+
+Example:
+```javascript
+function updatePosition(target, state) {
+  target.style.left = state.position[ 0 ] + 'px';
+  target.style.top = state.position[ 1 ] + 'px';
+}
+```
+
+It should be noted that parsers can be called multiple times with different definitions and `init` and `update` functions will be merged.
 
 ### `f1.init(initState)`
 
 Initializes `f1`. `init` will throw errors if required parameters such as
-states and transitions are missing. The initial state for the `f1` instance
-should be passed in.
+states, transitions, targets, and parsers are missing. The `initState` for the `f1` instance should be passed in as string.
 
 ### `f1.go(state, [cb])`
 

@@ -60,10 +60,12 @@ module.exports = f1;
  *     'idle', 'out' // and idle to out
  *   ],
  * 
- *   // an array of functions which will be able to take values
- *   // from a state define in states and apply it to the 
- *   // items defined in targets
- *   parsers: [ applyAlpha ]
+ *   // an Object contains init and update functions. These will be used
+ *   // to initialize your ui elements and apply state to targets during update
+ *   parsers: {
+ *     init: [ initPosition ],
+ *     update: [ applyPosition ]
+ *   }
  * }
  * ```
  * 
@@ -158,7 +160,8 @@ f1.prototype = extend(Emitter.prototype, {
    */
   targets: function(targets) {
 
-    this.defTargets = parseTargets(targets);
+    this.defTargets = targets;
+    this.parsedTargets = parseTargets(targets);
 
     return this;
   },
@@ -338,48 +341,38 @@ f1.prototype = extend(Emitter.prototype, {
    */
   transitions: function(transitions) {
 
-    this.defTransitions = Array.isArray(transitions) ? transitions : arguments;
+    this.defTransitions = Array.isArray(transitions) ? transitions : Array.prototype.slice.apply(arguments);
 
     return this;
   },
 
   /**
-   * `f1` can target many different platforms. How it does this is by learning
-   * how to parse defined states properties and applying it items you'd like
-   * to animate.
+   * `f1` can target many different platforms. How it does this is by using parsers which
+   * can target different platforms. Parsers apply calculated state objects to targets.
    *
-   * An Array of functions or multiple functions can be passes to `f1` each function
-   * will read data from the state and apply it to the object being animated.
+   * If working with the dom for instance your state could define values which will be applied
+   * by the parser to the dom elements style object.
    *
-   * An example function that sets the left position of a dom element might look like
-   * this:
-   * ```javascript
-   * function setLeft(item, data) {
+   * When calling parsers pass in an Object that can contain variables init, and update. Both should contain 
+   * an Array's of functions which will be used to either init or update ui.
+   *
+   * init's functions will receive: states definition, targets definition, and transitions definition.
+   * update functions will receive: target and state. Where target could be for instance a dom element and 
+   * state is the currently calculated state.
    * 
-   *  item.style.left = data.left + 'px';
-   * }
-   * ```
-   * 
-   * @param  {Array} an array of functions which will parse states and apply them to
-   *                 objects which are being animated.
+   * @param  {Object}  parsersDefinitions an Object which may define arrays of init and update functions
    * @chainable
    */
-  parsers: function() {
+  parsers: function(parsersDefinitions) {
 
-    var parseMethods = Array.prototype.slice.call(arguments);
-
-    this.parser = this.parser || new getParser();
-
-    // if it's an array of parsers
-    if(Array.isArray(arguments[ 0 ])) {
-
-      parseMethods = arguments[ 0 ];
+    // check that the parsersDefinitions is an object
+    if(typeof parsersDefinitions !== 'object' || Array.isArray(parsersDefinitions)) {
+      throw new Error('parsers should be an Object that contains arrays of functions under init and update');
     }
 
-    parseMethods.forEach(function(parser) {
+    this.parser = this.parser || getParser();
 
-      this.parser.parsers(parser);
-    }.bind(this));
+    this.parser.add(parsersDefinitions);
 
     return this;
   },
@@ -402,10 +395,18 @@ f1.prototype = extend(Emitter.prototype, {
     } else if(!this.defTransitions) {
 
       throw new Error('You must define transitions before attempting to call init');
+    } else if(!this.parser) {
+
+      throw new Error('You must define parsers before attempting to call init');
+    } else if(!this.defTargets) {
+
+      throw new Error('You must define targets before attempting to call init');
     } else {
 
       parseStates(driver, this.defStates);
       parseTransitions(driver, this.defStates, this.defTransitions);
+
+      this.parser.init(this.defStates, this.defTargets, this.defTransitions);
 
       driver.init(initState);
     }
@@ -464,43 +465,42 @@ f1.prototype = extend(Emitter.prototype, {
    * Basically allows you to have one f1 object control multiple objects
    * or manually apply animations to objects.
    * 
-   * @param  {String} animatablePath A path in the current state to the object you'd like to apply. The path should
+   * @param  {String} pathToTarget A path in the current state to the object you'd like to apply. The path should
    *                                 be defined using dot notation. So if your state had an object named `thing` and it
-   *                                 contained another object you'd like to apply called `data`. Your `animatablePath`
+   *                                 contained another object you'd like to apply called `data`. Your `pathToTarget`
    *                                 would be `'thing.data'`
-   * @param  {Object} animatable The object you'd like to apply the currently calculated state to. For instance animatable
+   * @param  {Object} target The object you'd like to apply the currently calculated state to. For instance target
    *                             could be an html element.
-   * @param  {Array} [parseFunctions] An optional array of functions which will pull data from the current state and apply
-   *                                  it to the `animatable` object.
+   * @param  {Object} [parserDefinition] An optional Object which defines init and update functions for a parser.
    */
-  apply: function(animatablePath, animatable, parseFunctions) {
+  apply: function(pathToTarget, target, parserDefinition) {
 
-    var data = this.data,
-        parser = this.parser,
-        animationData;
+    var data = this.data;
+    var parser = this.parser;
+    var animationData;
 
     // if parse functions were passed in then create a new parser
-    if(parseFunctions) {
+    if(parserDefinition) {
 
-      parser = new getParser(parseFunctions);
+      parser = new getParser(parserDefinition);
     }
 
     // if we have a parser then apply the parsers (parsers set css etc)
     if(parser) {
 
-      if(typeof animatablePath == 'string') {
+      if(typeof pathToTarget === 'string') {
 
-        animatablePath = animatablePath.split('.');
+        pathToTarget = pathToTarget.split('.');
       }
 
-      animationData = data[ animatablePath[ 0 ] ];
+      animationData = data[ pathToTarget[ 0 ] ];
 
-      for(var i = 1, len = animatablePath.length; i < len; i++) {
+      for(var i = 1, len = pathToTarget.length; i < len; i++) {
 
-        animationData = animationData[ animatablePath[ i ] ];
+        animationData = animationData[ pathToTarget[ i ] ];
       }
 
-      parser.parse(animatable, animationData);
+      parser.update(target, animationData);
     }
   }
 });
@@ -516,7 +516,8 @@ function getEventArgs(name, args) {
 
 function _onUpdate(data, state, time) {
 
-  var animatablePath, animatable;
+  var pathToTarget;
+  var target;
 
   if(data !== undefined && state !== undefined && time !== undefined) {
 
@@ -524,14 +525,14 @@ function _onUpdate(data, state, time) {
     this.state = state;
     this.time = time;
 
-    if(this.defTargets) {
+    if(this.parsedTargets) {
 
-      for(var i = 0, len = this.defTargets.length; i < len; i += 2) {
+      for(var i = 0, len = this.parsedTargets.length; i < len; i += 2) {
 
-        animatablePath = this.defTargets[ i ];
-        animatable = this.defTargets[ i + 1 ];
+        pathToTarget = this.parsedTargets[ i ];
+        target = this.parsedTargets[ i + 1 ];
 
-        this.apply(animatablePath, animatable);
+        this.apply(pathToTarget, target);
       }
     }
 
