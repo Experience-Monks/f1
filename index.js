@@ -88,10 +88,18 @@ function f1(settings) {
 
   this.onState = function() {
     emitter.emit.apply(emitter, getEventArgs('state', arguments));
+
+    if(onState) {
+      onState.apply(undefined, arguments);
+    }
   };
 
   this.onUpdate = function() {
     emitter.emit.apply(emitter, getEventArgs('update', arguments));
+
+    if(onUpdate) {
+      onUpdate.apply(undefined, arguments);
+    }
   };
 
   this.name = settings.name || 'ui_' + numInstances;
