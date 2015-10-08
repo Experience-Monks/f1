@@ -431,7 +431,7 @@ f1.prototype = extend(Emitter.prototype, {
   },
 
   /**
-   * Will tell `f1` to go to another state. Calling `go` will cause `f1` to calculate a path defined
+   * Will tell `f1` to go to animate to another state. Calling `go` will cause `f1` to calculate a path defined
    * through transitions to the state which was passed to it.
    * 
    * @param  {String} state The new state you'd like to go to
@@ -441,6 +441,20 @@ f1.prototype = extend(Emitter.prototype, {
   go: function(state, cb) {
 
     this.driver.go(state, cb);
+
+    return this;
+  },
+
+  /**
+   * Will tell `f1` to go to immediately jump to another state without animating. If an animation is currently
+   * happening that animation is stopped and the jump to state will happen immediately.
+   * 
+   * @param  {String} state The new state you'd like to go to
+   * @chainable
+   */
+  set: function(state) {
+
+    this.driver.set(state);
 
     return this;
   },

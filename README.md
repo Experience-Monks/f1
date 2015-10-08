@@ -394,9 +394,13 @@ states, transitions, targets, and parsers are missing. The `initState` for the `
 
 ### `f1.go(state, [cb])`
 
-Will tell `f1` to go to another state. Calling `go` will cause `f1` to calculate a path defined through transitions to the state which was passed to it.
+Will tell `f1` to animate to another state. Calling `go` will cause `f1` to calculate a path defined through transitions to the state which was passed to it.
 
 An optional callback can be passed which is called once `f1` has reached that state.
+
+### `f1.set(state)`
+
+Will tell `f1` to immediately jump to another state. If an animation is in progress that animation is stopped immediately.
 
 ### `f1.update()`
 
