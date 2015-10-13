@@ -31,14 +31,16 @@ test('animating basic values', function(t) {
   .states(test1.states)
   .transitions(test1.transitions)
   .targets({ item: item })
-  .parsers([
-    function(item, data) {
+  .parsers({
+    update: [
+      function(item, data) {
 
-      for(var i in data) {
-        item[ i ] = data[ i ];
+        for(var i in data) {
+          item[ i ] = data[ i ];
+        }
       }
-    }
-  ])
+    ]
+  })
   .init('a')
   .go( 'c', function() {
 
@@ -84,14 +86,16 @@ test('animating generated states', function(t) {
   .states(test1.states)
   .transitions(test1.transitions)
   .targets({ item: item })
-  .parsers([
-    function(item, data) {
+  .parsers({ 
+    update: [
+      function(item, data) {
 
-      for(var i in data) {
-        item[ i ] = data[ i ];
+        for(var i in data) {
+          item[ i ] = data[ i ];
+        }
       }
-    }
-  ])
+    ]
+  })
   .init('a')
   .go( 'c', function() {
 
