@@ -1,6 +1,6 @@
 {
   "name": "f1",
-  "version": "6.1.1",
+  "version": "6.1.2",
   "description": "A stateful ui library",
   "main": "index.js",
   "license": "MIT",
