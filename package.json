@@ -12,7 +12,7 @@
   "dependencies": {
     "extend": "^3.0.0",
     "interpolation-builder": "^2.1.0",
-    "kimi": "^4.3.6",
+    "kimi": "^4.3.7",
     "no-op": "^1.0.3",
     "tween-function": "^2.0.0"
   },
