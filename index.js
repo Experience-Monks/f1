@@ -427,7 +427,7 @@ f1.prototype = extend(Emitter.prototype, {
       global.__f1__.destroy(this);
     } 
 
-    // TODO: make sure kimi gets destroyed and everything else that's needed
+    this.driver.destroy();
   },
 
   /**
