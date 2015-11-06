@@ -1,7 +1,7 @@
 var kimi = require('kimi');
 var getTween = require('tween-function');
 var noop = require('no-op');
-var extend = require('extend');
+var extend = require('deep-extend');
 var Emitter = require('events').EventEmitter;
 
 var getParser = require('./lib/parsers/getParser');
@@ -105,6 +105,7 @@ function f1(settings) {
   };
 
   this.name = settings.name || 'ui_' + numInstances;
+  this.isInitialized = false;
   this.data = null; // current animation data
   this.defTargets = null;
   this.defStates = null;
@@ -388,33 +389,37 @@ f1.prototype = extend(Emitter.prototype, {
    */
   init: function(initState) {
 
-    var driver = this.driver;
+    if(!this.isInitialized) {
+      this.isInitialized = true;
 
-    if(!this.defStates) {
+      var driver = this.driver;
 
-      throw new Error('You must define states before attempting to call init');
-    } else if(!this.defTransitions) {
+      if(!this.defStates) {
 
-      throw new Error('You must define transitions before attempting to call init');
-    } else if(!this.parser) {
+        throw new Error('You must define states before attempting to call init');
+      } else if(!this.defTransitions) {
 
-      throw new Error('You must define parsers before attempting to call init');
-    } else if(!this.defTargets) {
+        throw new Error('You must define transitions before attempting to call init');
+      } else if(!this.parser) {
 
-      throw new Error('You must define targets before attempting to call init');
-    } else {
+        throw new Error('You must define parsers before attempting to call init');
+      } else if(!this.defTargets) {
 
-      parseStates(driver, this.defStates);
-      parseTransitions(driver, this.defStates, this.defTransitions);
+        throw new Error('You must define targets before attempting to call init');
+      } else {
 
-      this.parser.init(this.defStates, this.defTargets, this.defTransitions);
+        parseStates(driver, this.defStates);
+        parseTransitions(driver, this.defStates, this.defTransitions);
 
-      driver.init(initState);
+        this.parser.init(this.defStates, this.defTargets, this.defTransitions);
+
+        driver.init(initState);
+      }
+
+      if(global.__f1__) {
+        global.__f1__.init(this);
+      } 
     }
-
-    if(global.__f1__) {
-      global.__f1__.init(this);
-    } 
 
     return this;
   },
