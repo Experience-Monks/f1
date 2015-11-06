@@ -17,8 +17,10 @@
     "tween-function": "^2.0.0"
   },
   "devDependencies": {
+    "eases": "^1.0.8",
     "right-now": "^1.0.0",
-    "tape": "^3.5.0"
+    "tape": "^3.5.0",
+    "test-fuzzy-array": "^1.0.1"
   },
   "scripts": {
     "test": "node test/"

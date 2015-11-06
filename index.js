@@ -130,6 +130,7 @@ function f1(settings) {
   // kimi is the man who does all the work under the hood
   this.driver = kimi( {
 
+    manualStep: settings.autoUpdate === undefined ? false : !settings.autoUpdate,
     onState: _onState.bind(this),
     onUpdate: _onUpdate.bind(this)
   });
@@ -455,6 +456,20 @@ f1.prototype = extend(Emitter.prototype, {
   set: function(state) {
 
     this.driver.set(state);
+
+    return this;
+  },
+
+  /**
+   * This method can be used to manually update f1 by certain deltaTime. deltaTime should be in milliseconds.
+   * In order to use this function you must pass in autoUpdate: false otherwise a raf loop will be run after
+   * go.
+   * 
+   * @param  {Number} deltaTime How much time has passed since the last render in milliseconds
+   * @chainable
+   */
+  step: function(deltaTime) {
+    this.driver.step(deltaTime);
 
     return this;
   },
