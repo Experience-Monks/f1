@@ -8,7 +8,7 @@ module.exports = function(options) {
 
   var opts = options || {};
   var driver = kimi({
-    onState: onState,
+    manualStep: opts.autoUpdate === undefined ? false : !opts.autoUpdate,
     onUpdate: onUpdate
   });
   var countInState = 0;
@@ -74,14 +74,16 @@ module.exports = function(options) {
       driver.go(state);
 
       return this;
+    },
+
+    step: function(deltaTime) {
+      driver.step(deltaTime);
+
+      return this;
     }
   };
 
   return marshal;
-
-  function onState() {
-
-  }
 
   function onUpdate(state) {
     for(var target in state) {

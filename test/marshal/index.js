@@ -1,11 +1,11 @@
 var marshal = require('../../marshal');
 var getUI = require('./getUI');
 
-var ui1 = getUI(function() {
-  console.log('ui1 update');
+var ui1 = getUI(function(value, state, time) {
+  console.log('ui1 update', state);
 });
-var ui2 = getUI(function() {
-  console.log('ui2 update');
+var ui2 = getUI(function(value, state, time) {
+  console.log('ui2 update', state);
 });
 
 var controller = marshal({
@@ -48,10 +48,10 @@ var controller = marshal({
 controller.init('out');
 
 console.log('ui starting');
-controller.go('idle', function() {
-  console.log('ui is there');
+controller.go('rolled', function() {
+  console.log('ui is in rolled');
 
-  controller.go('rolled', function() {
-
+  controller.go('idle', function() {
+    console.log('ui is idle');
   });
 });
