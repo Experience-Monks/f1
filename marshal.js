@@ -77,6 +77,7 @@ module.exports = function(options) {
     },
 
     step: function(deltaTime) {
+
       driver.step(deltaTime);
 
       return this;
@@ -89,8 +90,6 @@ module.exports = function(options) {
     for(var target in state) {
       var ui = opts.targets[ target ];
       var toState = state[ target ];
-
-      // console.log(target, toState);
 
       if(!ui.isInitialized) {
         ui.init(toState);

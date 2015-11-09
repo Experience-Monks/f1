@@ -81,9 +81,6 @@ module.exports = function(t) {
   getFuzzyTest(t, 0.01)(cbUpdates.delayedValue, EXPECTED_UPDATES.delayedValue, 'delayedValue were correctish');
   getFuzzyTest(t, 0.01)(cbUpdates.easedValue, EXPECTED_UPDATES.easedValue, 'easedValue were correctish');
   getFuzzyTest(t, 0.01)(cbUpdates.durationValue, EXPECTED_UPDATES.durationValue, 'durationValue were correctish');
-
-  // t.deepEqual(cbStates, EXPECTED_STATES, 'callback states matched expected');
-  // t.deepEqual(cbUpdates, EXPECTED_UPDATES, 'callback updates matched expected');
   t.end();
 
   function callBackState() {
