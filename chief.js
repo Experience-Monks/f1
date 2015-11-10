@@ -9,7 +9,7 @@ module.exports = function(options) {
   var opts = options || {};
   var driver = kimi({
     manualStep: opts.autoUpdate === undefined ? false : !opts.autoUpdate,
-    onUpdate: onUpdate
+    onUpdate: options.onUpdate || onUpdate.bind(undefined, onTargetInState)
   });
   var countInState = 0;
   var countTargets = 0;
@@ -86,7 +86,7 @@ module.exports = function(options) {
 
   return chief;
 
-  function onUpdate(state) {
+  function onUpdate(onTargetInState, state) {
     for(var target in state) {
       var ui = opts.targets[ target ];
       var toState = state[ target ];

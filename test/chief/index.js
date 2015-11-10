@@ -12,7 +12,7 @@ module.exports = function(t) {
   });
 
   var controller = chief({
-    autoUpdate: false,
+    // autoUpdate: false,
 
     states: {
       out: {
@@ -55,7 +55,11 @@ module.exports = function(t) {
   controller.go('rolled', function() {
     
     controller.go('idle', function() {
-      t.end();
+      // t.end();
     });
   });
 };
+
+if(!module.parent) {
+  module.exports();
+}
