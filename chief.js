@@ -15,7 +15,7 @@ module.exports = function(options) {
   var countTargets = 0;
   var onInState = noOp;
 
-  var marshal = {
+  var chief = {
     targets: function(targets) {
       opts.targets = targets;
     },
@@ -32,18 +32,18 @@ module.exports = function(options) {
       var transitions;
 
       if(opts.targets === undefined) {
-        throw new Error('You must pass in targets to marshal');
+        throw new Error('You must pass in targets to chief');
       }
 
       if(opts.states === undefined) {
-        throw new Error('You must pass in states to marshal');
+        throw new Error('You must pass in states to chief');
       }
 
       if(opts.transitions === undefined) {
-        throw new Error('You must pass in transitions to marshal');
+        throw new Error('You must pass in transitions to chief');
       }
 
-      // for marshal we want to make the default duration to be 0
+      // for chief we want to make the default duration to be 0
       transitions = opts.transitions.map(function(transition) {
         transition = extend(
           {},
@@ -84,7 +84,7 @@ module.exports = function(options) {
     }
   };
 
-  return marshal;
+  return chief;
 
   function onUpdate(state) {
     for(var target in state) {

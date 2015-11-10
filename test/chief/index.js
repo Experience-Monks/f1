@@ -1,4 +1,4 @@
-var marshal = require('../../marshal');
+var chief = require('../../chief');
 var getUI = require('./getUI');
 
 module.exports = function(t) {
@@ -11,7 +11,7 @@ module.exports = function(t) {
     console.log('ui2 update', value, state, time);
   });
 
-  var controller = marshal({
+  var controller = chief({
     autoUpdate: false,
 
     states: {
