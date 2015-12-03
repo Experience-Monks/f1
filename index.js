@@ -487,7 +487,7 @@ f1.prototype = extend(Emitter.prototype, {
    */
   update: function() {
 
-    _onUpdate.call(this, this.data, this.state, this.time);
+    _onUpdate.call(this, this.data, this.state, this.time, this.duration);
 
     return this;
   },
@@ -548,7 +548,7 @@ function getEventArgs(name, args) {
   return args;
 }
 
-function _onUpdate(data, state, time) {
+function _onUpdate(data, state, time, duration) {
 
   var pathToTarget;
   var target;
@@ -558,6 +558,7 @@ function _onUpdate(data, state, time) {
     this.data = data;
     this.state = state;
     this.time = time;
+    this.duration = duration;
 
     if(this.parsedTargets) {
 
@@ -570,7 +571,11 @@ function _onUpdate(data, state, time) {
       }
     }
 
-    this.onUpdate(data, state, time);
+    // this is kind nasty because _onUpdate is called manually on update manual calls
+    // in this case we should emit an event duration could be undefined in that case
+    if(duration !== undefined) {
+      this.onUpdate(data, state, time, duration);  
+    }
   }
 }
 
@@ -579,6 +584,7 @@ function _onState(data, state) {
   this.data = data;
   this.state = state;
   this.time = 0;
+  this.duration = undefined;
 
   this.onState(data, state);
 }
