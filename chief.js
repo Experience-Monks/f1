@@ -66,6 +66,10 @@ module.exports = function(options) {
       return this;
     },
 
+    destroy: function() {
+      driver.destroy();
+    },
+
     go: function(state, onComplete) {
       countInState = 0;
 
