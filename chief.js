@@ -65,6 +65,10 @@ module.exports = function(options) {
       return this;
     },
 
+    destroy: function() {
+      driver.destroy();
+    },
+
     go: function(state, onComplete) {
       targetsInState = Object.keys(opts.states[ state ])
       .reduce(function(targetsInState, key) {

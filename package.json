@@ -1,6 +1,6 @@
 {
   "name": "f1",
-  "version": "6.3.1",
+  "version": "7.0.2",
   "description": "A stateful ui library",
   "main": "index.js",
   "license": "MIT",
@@ -12,7 +12,7 @@
   "dependencies": {
     "deep-extend": "^0.4.0",
     "interpolation-builder": "^2.1.0",
-    "kimi": "^4.3.9",
+    "kimi": "^5.0.0",
     "no-op": "^1.0.3",
     "tween-function": "^2.0.0"
   },
