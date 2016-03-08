@@ -11,8 +11,10 @@ module.exports = function(options) {
     manualStep: opts.autoUpdate === undefined ? false : !opts.autoUpdate,
     onUpdate: options.onUpdate || onUpdate.bind(undefined, onTargetInState)
   });
+  var targetsCurrent = {};
   var onInState = noOp;
   var targetsInState;
+
 
   var chief = {
     targets: function(targets) {
@@ -94,8 +96,10 @@ module.exports = function(options) {
       var toState = state[ target ];
 
       if(!ui.isInitialized) {
+        targetsCurrent[ target ] = toState;
         ui.init(toState);
-      } else {
+      } else if(targetsCurrent[ target ] !== toState) {
+        targetsCurrent[ target ] = toState;
         ui.go(toState, onTargetInState.bind(undefined, target));
       }
     }
