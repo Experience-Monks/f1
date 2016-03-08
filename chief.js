@@ -11,9 +11,8 @@ module.exports = function(options) {
     manualStep: opts.autoUpdate === undefined ? false : !opts.autoUpdate,
     onUpdate: options.onUpdate || onUpdate.bind(undefined, onTargetInState)
   });
-  var countInState = 0;
-  var countTargets = 0;
   var onInState = noOp;
+  var targetsInState;
 
   var chief = {
     targets: function(targets) {
@@ -59,15 +58,18 @@ module.exports = function(options) {
       parseStates(driver, opts.states);
       parseTransitions(driver, opts.states, transitions);
 
-      countTargets = Object.keys(opts.targets).length;
-
       driver.init(state);
 
       return this;
     },
 
     go: function(state, onComplete) {
-      countInState = 0;
+      targetsInState = Object.keys(opts.states[ state ])
+      .reduce(function(targetsInState, key) {
+        targetsInState[ key ] = false;
+
+        return targetsInState;
+      }, {});
 
       onInState = onComplete || noOp
 
@@ -94,15 +96,20 @@ module.exports = function(options) {
       if(!ui.isInitialized) {
         ui.init(toState);
       } else {
-        ui.go(toState, onTargetInState);
+        ui.go(toState, onTargetInState.bind(undefined, target));
       }
     }
   }
 
-  function onTargetInState() {
-    countInState++;
+  function onTargetInState(target) {
+    targetsInState[ target ] = true;
 
-    if(countInState === countTargets) {
+    var allInState = Object.keys(targetsInState)
+    .reduce(function(allInState, key) {
+      return allInState && targetsInState[ key ];
+    }, true);
+
+    if(allInState) {
       onInState();
     }
   }
