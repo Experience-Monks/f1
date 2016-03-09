@@ -18,12 +18,14 @@
   },
   "devDependencies": {
     "budo": "^8.0.4",
+    "eases": "^1.0.8",
     "right-now": "^1.0.0",
     "tape": "^3.5.0",
     "test-fuzzy-array": "^1.0.1"
   },
   "scripts": {
     "test": "node test/",
+    "testBrowser": "budo test/ --live --open",
     "example-f1": "budo example/f1/ --live --open",
     "example-chief": "budo example/chief/ --live --open",
     "f1-example": "npm run example-f1",
