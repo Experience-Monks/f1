@@ -1,31 +1,37 @@
 var f1 = require('../..');
 
-module.exports = function(onUpdate) {
+module.exports = function(target, values, onUpdate) {
+
+  target = target || {};
+  values = values || {
+    out: 0,
+    idle: 100,
+    rolled: 200
+  };
 
   var states = {
     out: {
       item: {
-        value: 0
+        value: values.out
       }
     },
 
     idle: {
       item: {
-        value: 100
+        value: values.idle
       }
     },
 
     rolled: {
       item: {
-        value: 200
+        value: values.rolled
       }
     }
   };
 
   var transitions = [
     { from: 'out', to: 'idle' },
-    { from: 'idle', to: 'rolled' },
-    { from: 'rolled', to: 'idle' }
+    { from: 'idle', to: 'rolled', bi: true }
   ];
 
   var parsers = {
@@ -44,7 +50,7 @@ module.exports = function(onUpdate) {
     transitions: transitions,
 
     targets: {
-      item: {}
+      item: target
     },
 
     parsers: parsers,

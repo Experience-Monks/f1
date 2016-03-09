@@ -5,4 +5,4 @@ test('passing states, targets, transitions, parsers through constructor', requir
 test('advanced animation', require('./advancedAnimation'));
 
 // theres some issues with kimi step
-// test('chief', require('./chief'));
+test('chief', require('./chief'));

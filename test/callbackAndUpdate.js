@@ -26,6 +26,16 @@ var EXPECTED_UPDATES = [
   [
     {
       "item": {
+        "value": 0
+      }
+    },
+    "out",
+    0,
+    0
+  ],
+  [
+    {
+      "item": {
         "value": 30
       }
     },
@@ -51,6 +61,16 @@ var EXPECTED_UPDATES = [
     },
     "out",
     0.9,
+    1
+  ],
+  [
+    {
+      "item": {
+        "value": 100
+      }
+    },
+    "idle",
+    0,
     1
   ]
 ];
