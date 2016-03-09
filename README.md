@@ -58,14 +58,25 @@ Designed to control `f1` ui instances. So let's assume you have a "page" of a si
 
 There are two small examples for `f1` and `Chief`. They exist in the `example/`folder in the `f1` repo. You can run the examples locally via npm scripts.
 
+Each example is commented to explain as much as possible and can be easily modified and played around with when running via npm scripts mentioned below.
+
 ### Example `f1`
-![F1 Example Preview](images/f1-preview.gif)
+[![F1 Example Preview](images/f1-preview.gif)](https://github.com/Jam3/f1/tree/master/example/f1)
+
 ```bash
 $ npm run example-f1
 ```
 
+[Source can be viewed here](https://github.com/Jam3/f1/tree/master/example/f1)
 
+### Example `chief`
+[![Chief Example Preview](images/chief-preview.gif)](https://github.com/Jam3/f1/tree/master/example/chief)
 
+```bash
+$ npm run example-chief
+```
+
+[Source can be viewed here](https://github.com/Jam3/f1/tree/master/example/f1)
 
 ## API Documentation
 
