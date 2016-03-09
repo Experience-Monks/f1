@@ -25,7 +25,9 @@
   "scripts": {
     "test": "node test/",
     "example-f1": "budo example/f1/ --live --open",
-    "example-chief": "budo example/chief/ --live --open"
+    "example-chief": "budo example/chief/ --live --open",
+    "f1-example": "npm run example-f1",
+    "chief-example": "npm run example-chief"
   },
   "keywords": [
     "state,stateful,ui,ease,tween"
