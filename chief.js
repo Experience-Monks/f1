@@ -11,10 +11,10 @@ module.exports = function(options) {
     manualStep: opts.autoUpdate === undefined ? false : !opts.autoUpdate,
     onUpdate: options.onUpdate || onUpdate.bind(undefined, onTargetInState)
   });
-  var targetsCurrent = {};
   var onInState = noOp;
+  var stateChief;
+  var currentTargetState;
   var targetsInState;
-
 
   var chief = {
     targets: function(targets) {
@@ -60,6 +60,9 @@ module.exports = function(options) {
       parseStates(driver, opts.states);
       parseTransitions(driver, opts.states, transitions);
 
+      stateChief = state;
+      currentTargetState = {};
+
       driver.init(state);
 
       return this;
@@ -70,6 +73,9 @@ module.exports = function(options) {
     },
 
     go: function(state, onComplete) {
+      stateChief = state;
+      currentTargetState = {};
+
       targetsInState = Object.keys(opts.states[ state ])
       .reduce(function(targetsInState, key) {
         targetsInState[ key ] = false;
@@ -100,18 +106,20 @@ module.exports = function(options) {
       var toState = state[ target ];
 
       if(!ui.isInitialized) {
-        targetsCurrent[ target ] = toState;
+        currentTargetState[ target ] = toState;
         ui.init(toState);
-      } else if(targetsCurrent[ target ] !== toState) {
-        targetsCurrent[ target ] = toState;
-        ui.go(toState, onTargetInState.bind(undefined, target));
+      } else if(currentTargetState[ target ] !== toState) {
+        currentTargetState[ target ] = toState;
+        ui.go(toState, onTargetInState.bind(undefined, target, toState));
       }
     }
   }
 
-  function onTargetInState(target) {
-    targetsInState[ target ] = true;
+  function onTargetInState(target, targetState) {
+    // set the current target as being in the state it should be in
+    targetsInState[ target ] = opts.states[ stateChief ][ target ] === targetState;
 
+    // now check if all states are in the state they should be in
     var allInState = Object.keys(targetsInState)
     .reduce(function(allInState, key) {
       return allInState && targetsInState[ key ];
