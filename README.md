@@ -6,6 +6,8 @@ F1 is a stateful ui library. F1 is the "core" for modules such as:
 - [`f1-dom`](https://www.npmjs.com/f1-dom)
 - [`react-f1`](https://www.npmjs.com/react-f1)
 
+[![Chief Example Preview](images/chief-preview.gif)](https://github.com/Jam3/f1/tree/master/example/chief)
+
 ## Table Of Contents
 
 - [Two parts of `f1`](#two-parts-of-f1)
