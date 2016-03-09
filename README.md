@@ -8,27 +8,27 @@ F1 is a stateful ui library. F1 is the "core" for modules such as:
 
 ## Table Of Contents
 
-- Two parts of `f1`
-  + `f1`
-  + `chief`
-- Examples
-  + `f1`
-  + `chief`
-- API Documentation
-  + `var ui = f1()`
-    * `ui.targets(targets)`
-    * `ui.states(states)`
-    * `ui.transitions(transitions)`
-    * `ui.parsers(parserDefinition)`
-    * `ui.init(initState)`
-    * `ui.go(state, [cb])`
-    * `ui.update()`
-  + `var page = chief()`
-    * `page.targets(targets)`
-    * `page.states(states)`
-    * `page.transitions(transitions)`
-    * `page.init(initState)`
-    * `page.go(state, [cb])`
+- [Two parts of `f1`](#two-parts-of-f1)
+  + [`f1`](#f1-1)
+  + [`chief`](#chief)
+- [Examples](#example)
+  + [`f1`](#example-f1)
+  + [`chief`](#example-chief)
+- [API Documentation](#api-documentation)
+  + [`var ui = f1()`](#var-ui--requiref1opts)
+    * [`ui.targets(targets)`](#uitargetstargets)
+    * [`ui.states(states)`](#uistatesstates)
+    * [`ui.transitions(transitions)`](#uitransitionstransitions)
+    * [`ui.parsers(parserDefinition)`](#uiparsersparserdefinition)
+    * [`ui.init(initState)`](#uiinitinitstate)
+    * [`ui.go(state, [cb])`](#uigostate-cb-1)
+    * [`ui.update()`](#uiupdate)
+  + [`var page = chief()`](#var-page--requiref1chiefopts)
+    * [`page.targets(targets)`](#pagetargetstargets)
+    * [`page.states(states)`](#pagestatesstates)
+    * [`page.transitions(transitions)`](#pagetransitionstransitions)
+    * [`page.init(initState)`](#pageinitinitstate)
+    * [`page.go(state, [cb])`](#pagegostate-cb)
 
 
 ## Two parts of `f1`
