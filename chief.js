@@ -9,7 +9,7 @@ module.exports = function(options) {
   var opts = options || {};
   var driver = kimi({
     manualStep: opts.autoUpdate === undefined ? false : !opts.autoUpdate,
-    onUpdate: options.onUpdate || onUpdate.bind(undefined, onTargetInState)
+    onUpdate: onUpdate.bind(undefined, onTargetInState)
   });
   var onInState = noOp;
   var stateChief;
@@ -100,7 +100,9 @@ module.exports = function(options) {
 
   return chief;
 
-  function onUpdate(onTargetInState, state) {
+  function onUpdate(onTargetInState, state, stateName, time) {
+    // console.log(arguments);
+
     for(var target in state) {
       var ui = opts.targets[ target ];
       var toState = state[ target ];
@@ -112,6 +114,10 @@ module.exports = function(options) {
         currentTargetState[ target ] = toState;
         ui.go(toState, onTargetInState.bind(undefined, target, toState));
       }
+    }
+
+    if(opts.onUpdate) {
+      opts.onUpdate(state, stateName);
     }
   }
 
@@ -126,7 +132,7 @@ module.exports = function(options) {
     }, true);
 
     if(allInState) {
-      onInState();
+      onInState(opts.states[ stateChief ], stateChief);
     }
   }
 };
