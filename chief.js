@@ -83,7 +83,7 @@ module.exports = function(options) {
         return targetsInState;
       }, {});
 
-      onInState = onComplete || noOp
+      onInState = onComplete || noOp;
 
       driver.go(state);
 
@@ -101,18 +101,18 @@ module.exports = function(options) {
   return chief;
 
   function onUpdate(onTargetInState, state, stateName, time) {
-    // console.log(arguments);
-
     for(var target in state) {
       var ui = opts.targets[ target ];
       var toState = state[ target ];
 
-      if(!ui.isInitialized) {
-        currentTargetState[ target ] = toState;
-        ui.init(toState);
-      } else if(currentTargetState[ target ] !== toState) {
-        currentTargetState[ target ] = toState;
-        ui.go(toState, onTargetInState.bind(undefined, target, toState));
+      if(ui) {
+        if(!ui.isInitialized) {
+          currentTargetState[ target ] = toState;
+          ui.init(toState);
+        } else if(currentTargetState[ target ] !== toState) {
+          currentTargetState[ target ] = toState;
+          ui.go(toState, onTargetInState.bind(undefined, target, toState));
+        }
       }
     }
 
