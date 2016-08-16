@@ -33,15 +33,15 @@ module.exports = function(options) {
       var transitions;
 
       if(opts.targets === undefined) {
-        throw new Error('You must pass in targets to chief');
+        throw new Error('Targets not defined or invalid in a Chief parent element.');
       }
 
       if(opts.states === undefined) {
-        throw new Error('You must pass in states to chief');
+        throw new Error('States not defined or invalid in a Chief parent element.');
       }
 
       if(opts.transitions === undefined) {
-        throw new Error('You must pass in transitions to chief');
+        throw new Error('Transitions not defined or invalid in a Chief parent element.');
       }
 
       // for chief we want to make the default duration to be 0
@@ -111,7 +111,12 @@ module.exports = function(options) {
           ui.init(toState);
         } else if(currentTargetState[ target ] !== toState) {
           currentTargetState[ target ] = toState;
-          ui.go(toState, onTargetInState.bind(undefined, target, toState));
+          try{
+            ui.go(toState, onTargetInState.bind(undefined, target, toState));
+          }
+          catch(err){
+            throw new Error("Could not transition to state '" + toState + "'. State is missing or invalid."); 
+          }
         }
       }
     }
