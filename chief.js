@@ -115,7 +115,7 @@ module.exports = function(options) {
             ui.go(toState, onTargetInState.bind(undefined, target, toState));
           }
           catch(err){
-            throw new Error("Could not transition chief target '" + target + "' to state '" + toState + "'. State is missing or invalid."); 
+            throw new Error("Could not transition chief target '" + target + "' to state '" + toState + "'. One or more chief target is assigned a missing or invalid state."); 
           }
         }
       }
