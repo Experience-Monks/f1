@@ -10,6 +10,7 @@
     "url": "https://github.com/jam3"
   },
   "dependencies": {
+    "@types/node": "^6.0.51",
     "deep-extend": "^0.4.0",
     "interpolation-builder": "^2.1.0",
     "kimi": "^6.0.0",
